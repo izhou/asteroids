@@ -15,12 +15,19 @@
   <script type="application/javascript" src="inheritance.js"></script>
 	<script type="application/javascript" src="moving_object.js"></script>
 	<script type="application/javascript" src="asteroid.js"></script>
+	<script type="application/javascript" src="ship.js"></script>
 	<script type="application/javascript" src="game.js"></script>
 
 	<script>
 	var canvas = document.createElement("canvas");
+	var ctx = canvas.getContext("2d")
+
+
+	// canvas.getContext("2d").fill();
 	canvas.setAttribute("width", Asteroids.Game.DIM_X);
 	canvas.setAttribute("height", Asteroids.Game.DIM_Y);
+
+
 
 	var body = document.getElementsByTagName("body")[0];
 	body.appendChild(canvas);
