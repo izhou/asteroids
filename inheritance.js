@@ -8,11 +8,11 @@ Function.prototype.inherits = function(superClass) {
 	Surrogate.prototype = superClass.prototype;
 	this.prototype = new Surrogate();
 }
-
-function Dog () {};
-Dog.prototype.bark = function () { console.log("Bark!"); };
-
-function Corgi () {};
-Corgi.inherits(Dog);
-
-new Corgi().bark();
+//
+// function Dog () {};
+// Dog.prototype.bark = function () { console.log("Bark!"); };
+//
+// function Corgi () {};
+// Corgi.inherits(Dog);
+//
+// new Corgi().bark();
