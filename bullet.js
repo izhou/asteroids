@@ -12,7 +12,7 @@
 	Bullet.inherits(Asteroids.MovingObject);
 
 	Bullet.prototype.hitAsteroids = function(asteroids) {
-		for (var i = 0; i < asteroids.length; i++) {
+		for (var i = asteroids.length - 1; i >= 0; i--) {
 			if (this.isCollidedWith(asteroids[i])) {
 				asteroids.splice(i,1);
 				return true;
