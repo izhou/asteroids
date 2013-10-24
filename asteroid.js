@@ -13,10 +13,10 @@
 	Asteroid.inherits(Asteroids.MovingObject);
 
 	Asteroid.randomAsteroid = function(dimX, dimY) {
-		var randomX = Math.random() * dimX;
-		var randomY = Math.random() * dimY;
+		var randomX = Math.floor(Math.random() * 2) * dimX;
+		var randomY = Math.floor(Math.random() * 2) * dimY;
 		var randomStart = [randomX, randomY];
-		var randomVec = [(Math.random() * 50) - 25, (Math.random() * 50) - 25];
+		var randomVec = [(Math.random() * 20) - 10, (Math.random() * 20) - 10];
 		return new Asteroid(randomStart, randomVec, Asteroid.RADIUS, Asteroid.COLOR);
 	}
 

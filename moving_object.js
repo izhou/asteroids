@@ -14,6 +14,7 @@
 	MovingObject.prototype.move = function(vel) {
 		this.centerX += vel[0];
 		this.centerY += vel[1];
+		this.pos = [this.centerX, this.centerY];
 
 	};
 
