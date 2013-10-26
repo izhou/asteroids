@@ -2,9 +2,9 @@
 
 	var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-	var Asteroid = Asteroids.Asteroid = function (pos, vel, radius, color) {
+	var Asteroid = Asteroids.Asteroid = function (pos, vel, angle, radius, color) {
 
-		Asteroids.MovingObject.call(this, pos, vel, radius, color);
+		Asteroids.MovingObject.call(this, pos, vel, angle, radius, color);
 	}
 
 	Asteroid.COLOR = "white";
@@ -19,10 +19,11 @@
 		var randomY = Math.floor(Math.random() * dimX);
 		startPosArray = [[XSide,randomY], [randomX, YSide]];
 
-		var randomRadius = Math.floor(Math.random() * 30) + 5;
+		var randomRadius = Math.floor(Math.random() * 40) + 30;
 		var randomStart = startPosArray[Math.floor(Math.random() * 2)];
-		var randomVec = [(Math.random() * 16) - 8, (Math.random() * 16) - 8];
-		return new Asteroid(randomStart, randomVec, randomRadius, Asteroid.COLOR);
+		var randomVec = (Math.random() * 16) - 8;
+		var randomDir = (Math.random() * 2 * Math.PI)
+		return new Asteroid(randomStart, randomVec, randomDir, randomRadius, Asteroid.COLOR);
 	}
 
 })(this)

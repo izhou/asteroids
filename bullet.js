@@ -2,10 +2,9 @@
 
 	var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-	var Bullet = Asteroids.Bullet = function (pos, vel, radius, color) {
-		var bulletVel = [vel[0] * 5, vel[1] * 5];
+	var Bullet = Asteroids.Bullet = function (pos, vel, angle, radius, color) {
 
-		Asteroids.MovingObject.call(this, pos, bulletVel, radius, color);
+		Asteroids.MovingObject.call(this, pos, vel * 5, angle, radius, color);
 	}
 
 
