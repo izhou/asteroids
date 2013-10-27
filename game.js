@@ -8,11 +8,17 @@
 		this.ship = Asteroids.Ship.buildShip([Game.DIM_X/2, Game.DIM_Y/2]);
 		this.bullets = [];
 		this.time = 0;
+		this.keysPressed = [];
+		this.gameEnded = false;
+		this.animationFrame = null;
+		this.lastFrameTime = null;
+		this.elapsedSeconds = null;
+		this.lastBulletTime = 0;
 	};
 
 	Game.DIM_X = $(window).width();
 	Game.DIM_Y = $(window).height()
-	Game.FPS = 100;
+	Game.MSPF = 100;
 
 	Game.prototype.addAsteroids = function (numAsteroids) {
 		for (var i = 0; i < numAsteroids; i++ ){
@@ -30,9 +36,8 @@
 	};
 
 	Game.prototype.isOutOfBounds = function(object) {
-		//console.log(object)
-		if (object.centerX > Game.DIM_X + 50 || object.centerY > Game.DIM_Y + 50 ||
-			object.centerX < -50 || object.centerY < -50) {
+		if (object.centerX > Game.DIM_X + 100 || object.centerY > Game.DIM_Y + 100 ||
+			object.centerX < -100 || object.centerY < -100) {
 			return true;
 		} else {
 			return false;
@@ -60,35 +65,58 @@
 
 	Game.prototype.fireBullet = function() {
 		var that = this;
-		//console.log(this.ship);
-		that.bullets.push(that.ship.fireBullet());
+		var now = (+ new Date)/1000;
+		console.log(now - this.lastBulletTime);
+		if ((now - this.lastBulletTime) >= 0.1) {
+			that.bullets.push(that.ship.fireBullet());
+			this.lastBulletTime = now;
+		}
 	}
 
-	
+	Game.prototype.bindKeyHandlers = function() {
+		var g = this;
+		
+		$(window).keydown(function(e) {
+			if (e.which === 32) {
+				e.preventDefault();
+			}
+			g.keysPressed.push(e.which);
+			g.keysPressed = _.uniq(g.keysPressed);
+			//g.bindKeyHandlers(g.keysPressed);
+		}).keyup(function(e) {
+			g.keysPressed = _.without(g.keysPressed, e.which);
+		});
+//		return g.keysPressed;
+	};
 
-	Game.prototype.bindKeyHandlers = function(event) {
-		switch(event.which) {
-		case 32:
-			this.fireBullet();
-			break;
-		case 87:
-			this.ship.power(1);
-			break;
-		case 83:
-			this.ship.power(-1);
-		case 65:
-			this.ship.rotate(-0.5);
-			break;
-		case 68:
-			this.ship.rotate(0.5);
-			break;
-		}
+	Game.prototype.applyActions = function(elapsedSeconds) {
+		var g = this;
 
+		g.keysPressed.forEach(function(key) {
+				switch(key) {
+					case 32:
+						g.fireBullet();
+						break;
+					case 87:
+						g.ship.power(elapsedSeconds);
+						break;
+					case 83:
+						g.ship.power(-elapsedSeconds);
+						break;
+					case 65:
+						g.ship.rotate(-elapsedSeconds);
+						break;
+					case 68:
+						g.ship.rotate(elapsedSeconds);
+						break;
+				}
+			}
+		);
 	};
 
 
 	Game.prototype.stop = function() {
-		clearInterval(this.time);
+		cancelAnimationFrame(this.animationFrame);
 	}
 
 	Game.prototype.draw = function(ctx) {
@@ -110,40 +138,50 @@
 			return true;
 		}
 		for (i = this.bullets.length - 1; i >= 0; i--) {
-			console.log(this.bullets[i]);
 			if (this.bullets[i].hitAsteroids(this.asteroids)) {
 				this.bullets.splice(i,1);
 			}
 		}
 	};
 
-	Game.prototype.move = function() {
-		this.ship.move(this.ship.vel, this.ship.angle);
+	Game.prototype.move = function(elapsedSeconds) {
+		this.ship.move();
 		this.asteroids.forEach(function(asteroid) {
-			asteroid.move(asteroid.vel, asteroid.angle);
+			asteroid.move(asteroid.vel * elapsedSeconds, asteroid.angle);
 		});
 		this.bullets.forEach(function(bullet) {
-			bullet.move(bullet.vel, bullet.angle);
+			bullet.move(bullet.vel * elapsedSeconds, bullet.angle);
 		});
 	};
 
 	Game.prototype.step = function() {
-		this.move();
+		this.animationFrame = requestAnimationFrame(this.step.bind(this));
+		var now = + new Date()
+		var elapsedSeconds = (now - this.lastFrameTime)/1000;
+		//console.log(this.elapsedSeconds);
+		this.lastFrameTime = now;
+		this.applyActions(elapsedSeconds);
+		this.move(elapsedSeconds);
 		this.draw(this.ctx);
 		this.checkCollisions();
 		this.removeOffScreen();
-		this.addAsteroids(Math.floor(Math.random() * 2));
+		this.addAsteroids(Math.floor(Math.random() * 1.2));
 		this.removeShotAsteroids();
+
 	};
 
 
 	Game.prototype.start = function() {
-		$(window).keydown(this.bindKeyHandlers.bind(this))
-		var g = this;
-		this.time = root.setInterval(function() {
-			g.step();
-		}, Game.FPS);
+		this.bindKeyHandlers();
+		this.lastFrameTime = + new Date();
+		this.step();
+		//this.time = root.setInterval(function() {
+		//	g.step();
+		//}, Game.MSPF);
 	};
 
 })(this);
+
+
+
 

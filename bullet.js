@@ -4,7 +4,7 @@
 
 	var Bullet = Asteroids.Bullet = function (pos, vel, angle, radius, color) {
 
-		Asteroids.MovingObject.call(this, pos, vel * 5, angle, radius, color);
+		Asteroids.MovingObject.call(this, pos, 500, angle, radius, color);
 	}
 
 

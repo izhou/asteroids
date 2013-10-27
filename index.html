@@ -31,7 +31,8 @@
 	var body = document.getElementsByTagName("body")[0];
 	body.appendChild(canvas);
 
-	new Asteroids.Game(canvas.getContext("2d")).start();
+	game = new Asteroids.Game(canvas.getContext("2d"));
+  game.start();
 	</script>
 	foobar
 </body>
