@@ -1,23 +1,31 @@
 (function(root) {
 
-	var Asteroids = root.Asteroids = (root.Asteroids || {});
+  var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-	var Bullet = Asteroids.Bullet = function (pos, vel, angle, radius, color) {
+  var Bullet = Asteroids.Bullet = function(ship, game) {
+    this.ship = ship;
+    this.game = game;
+    Asteroids.MovingObject.call(this, ship.pos, Bullet.VEL, ship.angle, Bullet.RADIUS, Bullet.COLOR);
+  }
 
-		Asteroids.MovingObject.call(this, pos, 500, angle, radius, color);
-	}
+  Bullet.inherits(Asteroids.MovingObject);
 
+  Bullet.VEL = 500;
+  Bullet.RADIUS = 2;
+  Bullet.COLOR = "#FF4C30";
 
-	Bullet.inherits(Asteroids.MovingObject);
+  Bullet.fireBullet = function(game) {
+    return new Bullet(game.ship, game)
+  }
 
-	Bullet.prototype.hitAsteroids = function(asteroids) {
-		for (var i = asteroids.length - 1; i >= 0; i--) {
-			if (this.isCollidedWith(asteroids[i])) {
-				asteroids.splice(i,1);
-				return true;
-			}
-		}
-	}
-
+  Bullet.prototype.hitAsteroids = function() {
+    for (var i = this.game.asteroids.length - 1; i >= 0; i--) {
+      if (this.isCollidedWith(this.game.asteroids[i])) {
+        aster = this.game.asteroids.splice(i,1)[0];
+        Asteroids.makeBabies(aster);
+        return true;
+      }
+    }
+  }
 
 })(this)
