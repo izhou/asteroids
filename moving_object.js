@@ -19,30 +19,26 @@
     this.centerX += Math.cos(angle) * vel;
     this.centerY += Math.sin(angle) * vel;
     this.pos = [this.centerX, this.centerY];
-
   };
 
  MovingObject.prototype.draw = function(ctx) {
     ctx.fillStyle = this.color;
     ctx.save();
-    that = this;
-    ctx.translate(this.centerX, this.centerY)
+    this.transformRender(ctx);
+    ctx.fill();
+    ctx.restore();
+  };
 
-    ctx.rotate(this.angle);
-    
+  MovingObject.prototype.transformRender = function(ctx) {
+    ctx.translate(this.centerX, this.centerY)
+    ctx.rotate(this.rotation);
     ctx.beginPath();
     ctx.moveTo(this.coordinates[0][0], this.coordinates[0][1]);
-
     for (var i = 1; i < this.coordinates.length; i++) {
       ctx.lineTo( this.coordinates[i][0], this.coordinates[i][1]);
     };
-
     ctx.closePath();
-    
-    ctx.fill();
-    
-    ctx.restore();
-  };
+  }
 
   MovingObject.prototype.isCollidedWith = function(otherObject) {
 

@@ -13,7 +13,7 @@
   Bullet.VEL = -500;
   Bullet.COORDS = [[-2,-2],[-2,2],[2,2],[2,-2]];
   Bullet.RADIUS = 2;
-  Bullet.COLOR = "#FF4C30";
+  Bullet.COLOR = "red";
 
   Bullet.fireBullet = function(game) {
     return new Bullet(game.ship, game)

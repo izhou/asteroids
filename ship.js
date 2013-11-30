@@ -3,7 +3,7 @@
   var Asteroids = root.Asteroids = (root.Asteroids || {});
 
   var Ship = Asteroids.Ship = function (pos) {
-    Asteroids.MovingObject.call(this, pos, Ship.START_VEL, Ship.START_ANGLE, Ship.COORDS, Ship.RADIUS, Ship.COLOR, Ship.START_ANGLE);
+    Asteroids.MovingObject.call(this, pos, Ship.START_VEL, Ship.START_ANGLE, Ship.COORDS, Ship.RADIUS, Ship.COLOR, Ship.START_ROTATION);
     this.angle_vel = 0;
 
   };
@@ -12,6 +12,7 @@
 
   Ship.START_VEL = 0;
   Ship.START_ANGLE = Math.PI/2;
+  Ship.START_ROTATION = Ship.START_ANGLE; //rotation angle is same as direction
   Ship.COLOR = "#ADFF2F";
   Ship.RADIUS = 10;
   Ship.COORDS = [[-10,0],[10,10],[10,-10]];
@@ -21,26 +22,6 @@
   Ship.buildShip = function(pos) {
     return new Ship(pos);
   }
-
-  Ship.prototype.draw = function(ctx) {
-    ctx.fillStyle = this.color;
-    ctx.save();
-    that = this;
-    ctx.translate(this.centerX, this.centerY)
-
-
-    ctx.rotate(this.rotation);
-    
-    ctx.beginPath();
-    ctx.moveTo(this.coordinates[0][0], this.coordinates[0][1]);
-
-    for (var i = 1; i < this.coordinates.length; i++) {
-      ctx.lineTo( this.coordinates[i][0], this.coordinates[i][1]);
-    };
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  };
 
   Ship.prototype.move = function() {
     this.angle += this.angle_vel;
