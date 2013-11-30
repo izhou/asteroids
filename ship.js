@@ -3,7 +3,7 @@
   var Asteroids = root.Asteroids = (root.Asteroids || {});
 
   var Ship = Asteroids.Ship = function (pos) {
-    Asteroids.MovingObject.call(this, pos, Ship.START_VEL, Ship.START_ANGLE, Ship.RADIUS, Ship.COLOR);
+    Asteroids.MovingObject.call(this, pos, Ship.START_VEL, Ship.START_ANGLE, Ship.COORDS, Ship.RADIUS, Ship.COLOR, Ship.START_ANGLE);
     this.angle_vel = 0;
 
   };
@@ -11,10 +11,11 @@
   Ship.inherits(Asteroids.MovingObject);
 
   Ship.START_VEL = 0;
-  Ship.START_ANGLE = 3*Math.PI/2
+  Ship.START_ANGLE = Math.PI/2;
   Ship.COLOR = "#ADFF2F";
   Ship.RADIUS = 10;
-  Ship.MAX_VEL = 750;
+  Ship.COORDS = [[-10,0],[10,10],[10,-10]];
+  Ship.MAX_VEL = -750;
   Ship.MAX_ANGLE_VEL = Math.PI;
 
   Ship.buildShip = function(pos) {
@@ -28,21 +29,22 @@
     ctx.translate(this.centerX, this.centerY)
 
 
-    ctx.rotate(this.angle + Math.PI);
+    ctx.rotate(this.rotation);
     
     ctx.beginPath();
-    ctx.moveTo(-10, 0);
-    ctx.lineTo( 10,  10 );
-    ctx.lineTo( 10,  -10 );
+    ctx.moveTo(this.coordinates[0][0], this.coordinates[0][1]);
+
+    for (var i = 1; i < this.coordinates.length; i++) {
+      ctx.lineTo( this.coordinates[i][0], this.coordinates[i][1]);
+    };
     ctx.closePath();
-    
     ctx.fill();
-    
     ctx.restore();
   };
 
   Ship.prototype.move = function() {
     this.angle += this.angle_vel;
+    this.rotation = this.angle;
     this.angle_vel = this.angle_vel*0.95;
     this.centerX += Math.cos(this.angle) * this.vel;
     this.centerY += Math.sin(this.angle) * this.vel;
@@ -53,10 +55,10 @@
 
 
   Ship.prototype.power = function(impulse) {
-    this.vel += impulse * 2;
-    if (this.vel > Ship.MAX_VEL) {
+    this.vel -= impulse * 2;
+    if (this.vel < Ship.MAX_VEL) {
       this.vel = Ship.MAX_VEL;
-    } else if (this.vel < 0) {
+    } else if (this.vel > 0) {
       this.vel = 0;
     }
   }

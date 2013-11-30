@@ -3,14 +3,15 @@
   var Asteroids = root.Asteroids = (root.Asteroids || {});
 
   var Asteroid = Asteroids.Asteroid = function (pos, vel, angle, radius) {
-    Asteroids.MovingObject.call(this, pos, vel, angle, radius, Asteroid.COLOR);
-    this.coordinates = [];
+    Asteroids.MovingObject.call(this, pos, vel, angle, this.coordinates, this.radius, Asteroid.COLOR);
+    // this.coordinates = [];
     this.rotation = 0;
     this.rotationSpeed = Math.random() * 0.1 -0.05;
+    this.radius = radius * 1.4; //bounding radius
+    this.coordinates = []
     var that = this;
-    
+
     var angles = new Array(_.random(7,14));
-    
     for (i = 0; i < angles.length; i++ ) {
       angles[i] = (2 * Math.PI * i / angles.length + Math.random() * 0.2);
     };
@@ -19,16 +20,16 @@
     angles.forEach(function(ang){
       var x = that.radius * Math.cos(ang) * (0.6 + (Math.random() * 0.8));
       var y = that.radius * Math.sin(ang) * (0.6 + (Math.random() * 0.8));
-      that.coordinates.push([x, y])
+      that.coordinates.push([x, y]);
     });
   };
   
   Asteroid.inherits(Asteroids.MovingObject);
 
-  Asteroid.COLOR = "gray";
+  Asteroid.COLOR = "white";
 
   Asteroid.prototype.draw = function(ctx) {
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = Asteroid.COLOR;
     ctx.fillStyle = this.color;
     ctx.save();
 

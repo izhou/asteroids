@@ -66,7 +66,7 @@
     var g = this;
     var now = (+ new Date)/1000;
 
-    if ((now - this.lastBulletTime) >= 0.1) {
+    if ((now - this.lastBulletTime) >= 0.2) {
       g.bullets.push(Asteroids.Bullet.fireBullet(g));
       this.lastBulletTime = now;
     }
@@ -126,6 +126,7 @@
     this.asteroids.forEach(function(asteroid) {
       asteroid.draw(ctx);
     });
+
   };
 
   Game.prototype.removeCollisions = function() {
