@@ -12,7 +12,6 @@
     this.rotation = rotation;
     this.centerX = this.pos[0];
     this.centerY = this.pos[1];
-
   };
 
   MovingObject.prototype.move = function(vel, angle) {
@@ -21,7 +20,7 @@
     this.pos = [this.centerX, this.centerY];
   };
 
- MovingObject.prototype.draw = function(ctx) {
+  MovingObject.prototype.draw = function(ctx) {
     ctx.fillStyle = this.color;
     ctx.save();
     this.transformRender(ctx);
@@ -41,45 +40,41 @@
   }
 
   MovingObject.prototype.isCollidedWith = function(otherObject) {
-
-    var xDistance = this.centerX - otherObject.centerX;
-    var yDistance = this.centerY - otherObject.centerY;
-
-    var distance = Math.pow(Math.pow(xDistance, 2) + Math.pow(yDistance, 2), 0.5);
-
-    if (this.radius + otherObject.radius < distance) { //detect whether bounding circles of polygons collide
-      
+    if (this.isInBounds(otherObject)) {
+      var obj = this;
+      var coords = this.transformedCoords();
+      var poly = otherObject.transformedCoords();
+      return MovingObject.isWithin(coords, poly);
+    } else {
       return false;
-    } else {  //detect whether coordinates of object fall within other polygon 
-      return this.isWithin(otherObject);
-      
-
     }
   };
 
-  MovingObject.prototype.isWithin = function(otherObject) { //point-in-polygon algorithm
+  MovingObject.prototype.isInBounds = function(otherObject) {
+    var xDistance = this.centerX - otherObject.centerX;
+    var yDistance = this.centerY - otherObject.centerY;
+    var distance = Math.pow(Math.pow(xDistance, 2) + Math.pow(yDistance, 2), 0.5);
+    return (this.radius + otherObject.radius > distance)//detect whether bounding circles of polygons collide
+  };
+
+  MovingObject.prototype.transformedCoords = function() {
     var that = this;
-
-    var rotatedCoord = function(coord, obj) {
-      var newX = coord[0] * Math.cos(obj.rotation) - coord[1] * Math.sin(obj.rotation) + obj.centerX;
-      var newY = coord[0] * Math.sin(obj.rotation) + coord[1] * Math.cos(obj.rotation) + obj.centerY;
+    var cosRotation = Math.cos(this.rotation);
+    var sinRotation = Math.sin(this.rotation);
+    return _.map(this.coordinates, function(coord) {
+      var newX = coord[0] * cosRotation - coord[1] * sinRotation + that.centerX;
+      var newY = coord[0] * sinRotation + coord[1] * cosRotation + that.centerY;
       return [newX, newY];
-    }
-
-    var coordinates = _.map(this.coordinates, function(coord){
-      return rotatedCoord(coord, that) ;
     });
+  };
 
-    var vert = _.map(otherObject.coordinates, function(coord){
-      return rotatedCoord(coord, otherObject);
-    });
-
-    var numVert = vert.length;
-    return coordinates.some(function(coord) {
+  MovingObject.isWithin = function(coords, poly) { //point-in-polygon algorithm
+    var numVert = poly.length;
+    return coords.some(function(coord) {
       var within = false;
       for (var i = 0, j = numVert - 1; i < numVert; j = i++) {
-        if ( ((vert[i][1] > coord[1]) != (vert[j][1] > coord[1])) &&
-          (coord[0] < (vert[j][0] - vert[i][0]) * (coord[1] - vert[i][1]) / (vert[j][1] - vert[i][1]) + vert[i][0]))
+        if ( ((poly[i][1] > coord[1]) != (poly[j][1] > coord[1])) &&
+          (coord[0] < (poly[j][0] - poly[i][0]) * (coord[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0]))
           within = !within;
       }
       return within;

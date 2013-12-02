@@ -4,8 +4,6 @@
 </head>
 
 <body>
-  <div id="content">
-  </div>
 
   <!-- first load the jQuery library hosted by Google -->
   <script type="application/javascript"
@@ -20,20 +18,37 @@
   <script type="application/javascript" src="bullet.js"></script>
   <script type="application/javascript" src="ship.js"></script>
   <script type="application/javascript" src="game.js"></script>
+  <audio id = "myMusic" src = "Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"> </audio>
+  <div id = 'muzak' style='display: inline-block; position:absolute; bottom:20px; right:20px; font-size: 28;font-family:Arial; color:purple;'>Muzak</div>
+  <div id = 'score'></div>
 
   <script>
-  var canvas = document.createElement("canvas");
-  var ctx = canvas.getContext("2d");
+    var music = true;
+    $('#muzak').click(function() {
+      console.log('click');
+      if (music) {
+        myMusic.pause();
+      } else {
+        myMusic.play();
+      }
+      music = !music;
+    });
 
-  canvas.setAttribute("width", Asteroids.Game.DIM_X);
-  canvas.setAttribute("height", Asteroids.Game.DIM_Y);
+    myMusic.play();
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
 
-  var body = document.getElementsByTagName("body")[0];
-  body.appendChild(canvas);
+    //var body = document.getElementsByTagName("body")[0];
+    $('body').append(canvas);
 
-  game = new Asteroids.Game(canvas.getContext("2d"));
-  game.start();
+    game = new Asteroids.Game(canvas.getContext("2d"));
+    canvas.setAttribute("width", game.dimX);
+    canvas.setAttribute("height", game.dimY);
+    game.start();
+
   </script>
+
   foobar
 </body>
+
 </html>
