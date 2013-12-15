@@ -22,16 +22,16 @@
     ctx.restore();
   };
 
-  Asteroid.randomAsteroid = function(dimX, dimY, shipRadius) {
-    var XSide = Math.floor(Math.random() * 2) * (dimX + 80) - 40;
-    var YSide = Math.floor(Math.random() * 2) * (dimY + 80) - 40;
+  Asteroid.randomAsteroid = function(dimX, dimY, scale) {
+    var XSide = (Math.round(Math.random()) * 2 - 1) * dimX + (Math.random() * dimX);
+    var YSide = (Math.round(Math.random()) * 2 - 1) * dimX + (Math.random() * dimX);
     var randomX = Math.floor(Math.random() * dimX);
     var randomY = Math.floor(Math.random() * dimX);
     startPosArray = [[XSide,randomY], [randomX, YSide]];
 
-    var randomRadius = Math.floor(Math.random() * shipRadius * 2) + 30;
+    var randomRadius = Math.floor(Math.random() * scale * 60) + 30;
     var randomPos = startPosArray[Math.floor(Math.random() * 2)];
-    var randomVec = (Math.random() * 100) + 25;
+    var randomVec = ((Math.random() * 100) + 25) * scale;
     var randomDir = (Math.random() * 2 * Math.PI)
     var randomCoords = Asteroid.generateCoords(randomRadius);
     var randomRotation = Math.random() * 0.1 -0.05;

@@ -14,19 +14,23 @@
     this.elapsedSeconds = null;
     this.lastBulletTime = 0;
     this.babyAsteroids = [];
-    this.shipSize = 200;
+    this.shipSize = 250;
+    this.scale = 1;
     this.dimX = $(window).width();
     this.dimY = $(window).height();
-    this.ship = Asteroids.Ship.buildShip([this.dimX/2, this.dimY/2]);
+    this.ship = Asteroids.Ship.buildShip([0,0]);
+    this.zoomSize = 4000;
+    this.zoomCount = 0;
+    this.zoomScale = 1;
+    this.screenCenter = [this.dimX/2, this.dimY/2];
+    this.cameraCenter = [this.dimX/2, this.dimY/2];
   };
 
-  // Game.dimX = $(window).width();
-  // Game.dimY = $(window).height()
   Game.MSPF = 100;
 
   Game.prototype.addAsteroids = function (numAsteroids) {
     for (var i = 0; i < numAsteroids; i++ ){
-      this.asteroids.push(Asteroids.Asteroid.randomAsteroid(this.dimX, this.dimY, this.ship.radius));
+      this.asteroids.push(Asteroids.Asteroid.randomAsteroid(this.dimX * this.scale, this.dimY * this.scale, this.scale));
     };
     var that = this;
     _.times(this.babyAsteroids.length, function(){that.asteroids.push(that.babyAsteroids.pop())});
@@ -37,11 +41,19 @@
       if (this.asteroids[i].area < this.shipSize) {
         if (this.asteroids[i].isCollidedWith(this.ship)) {
           this.shipSize += this.asteroids[i].area;
-          this.ship.radius = Math.sqrt(0.5 * this.shipSize);
-          this.ship.scale();
+          this.ship.radius = Math.sqrt(0.4 * this.shipSize);
+          this.ship.grow();
           this.asteroids.splice(i,1);
-          if (this.shipSize > 500) {
-            _.once(this.zoomOut());
+          if (this.shipSize > this.zoomSize) {
+            console.log(this.screenCenter);
+            this.cameraCenter[0] += this.ship.centerX * (this.zoomScale * .750162944);
+            this.cameraCenter[1] += this.ship.centerY * (this.zoomScale * .750162944);
+            console.log(this.cameraCenter);
+            this.zoomCount = 138;
+            // this.screenCenter = this.ship.pos;
+            var levelUp = new Audio('levelUp.wav')
+            levelUp.play();
+            this.zoomSize *= 16.346165883;
           }
         }
       } else {
@@ -53,20 +65,14 @@
     };
   };
 
-  Game.prototype.zoomOut = function() {
-    this.ctx.scale(0.99
-      ,0.99);
-    this.dimX = $(window).width();
-    this.dimY = $(window).height();
-  }
 
   Game.prototype.isOutOfBounds = function(object) {
-    if (object.centerX > this.dimX + 100 || object.centerY > this.dimY + 100 ||
-      object.centerX < -100 || object.centerY < -100) {
-      return true;
-    } else {
+    // if (object.centerX > this.dimX * this.scale + 100 || object.centerY > this.dimY * this.scale + 100 ||
+    //   object.centerX < -100 || object.centerY < -100) {
+    //   return true;
+    // } else {
       return false;
-    }
+    // }
   };
 
   Game.prototype.removeOffScreen = function() {
@@ -93,7 +99,9 @@
     var now = (+ new Date)/1000;
 
     if ((now - this.lastBulletTime) >= 0.10) {
-      g.bullets.push(Asteroids.Bullet.fireBullet(g));
+      var laserSound = new Audio('fireBullet.wav')
+      laserSound.play();
+      g.bullets.push(Asteroids.Bullet.fireBullet(g, g.scale));
       this.lastBulletTime = now;
     }
   }
@@ -142,21 +150,55 @@
 
   Game.prototype.draw = function(ctx) {
     var that = this;
-    ctx.clearRect(0,0, canvas.getAttribute("width") * 2, canvas.getAttribute("height") * 2);
+    var height = canvas.getAttribute("height");
+    var width = canvas.getAttribute("width");
     ctx.fillStyle = "black";
-    ctx.fillRect(0,0, canvas.getAttribute("width") * 2, canvas.getAttribute("height") * 2);
-    //debugger
-    this.ship.draw(ctx);
-    this.bullets.forEach(function(bullet) {
-      bullet.draw(ctx);
-    });
-    this.asteroids.forEach(function(asteroid) {
-      asteroid.draw(ctx, that.shipSize);
-    });
+    ctx.fillRect(-width,-height, 2 * width, 2 * height);
+    ctx.save();
+
+      ctx.translate(this.screenCenter[0], this.screenCenter[1]);
+
+      ctx.scale(this.zoomScale,this.zoomScale);
+      this.ship.draw(ctx);
+      this.asteroids.forEach(function(asteroid) {
+        asteroid.draw(ctx, that.shipSize);
+      });
+      this.bullets.forEach(function(bullet) {
+        bullet.draw(ctx);
+      });
+
+    // ctx.fillStyle = "red"
+    // ctx.beginPath();
+    // ctx.arc(0,0,50,0,2*Math.PI);
+    // ctx.closePath()
+    // ctx.fill();
+    // ctx.fillStyle='yellow';
+    // ctx.beginPath();
+    // ctx.arc(this.cameraCenter[0],this.cameraCenter[1],20 * this.scale,0,2*Math.PI);
+    // ctx.closePath()
+    // ctx.fill();
+
+    ctx.fillStyle='black';
+    ctx.beginPath();
+    ctx.arc(this.ship.centerX,this.ship.centerY, 3 * this.scale,0,2*Math.PI);
+    ctx.closePath()
+    ctx.fill();
+
+
+    // ctx.fillStyle = "blue"
+    // ctx.beginPath();
+    // ctx.arc(this.screenCenter[0],this.screenCenter[1],20 * this.scale,0,2*Math.PI);
+    // ctx.closePath()
+    // ctx.fill();
+
+
+
+    ctx.restore();
+
     ctx.fillStyle = "purple";
-    ctx.font = "bold 28px Arial";
+    ctx.font = "bold 28px ocr a std";
     ctx.fillText(this.shipSize, 50, 50);
-    //ctx.scale(.999,.999)
+    // ctx.scale(.999,.999)
 
   };
 
@@ -165,8 +207,9 @@
       for (var i = this.bullets.length - 1; i >= 0; i--) {
         for (var j = this.asteroids.length - 1; j >= 0; j--) {
           if (this.bullets[i].isCollidedWith(this.asteroids[j]) && this.asteroids[j].area > this.shipSize) {
+            var collisionSound = new Audio('explosion.wav')
+            collisionSound.play();
             var babies = this.asteroids[j].fragmentAsteroid(this.bullets[i], this.shipSize);
-            console.log(babies);
             if (babies)
               this.babyAsteroids.push.apply(this.babyAsteroids, babies);
             this.bullets.splice(i,1);
@@ -199,8 +242,23 @@
     this.move(elapsedSeconds);
     this.draw(this.ctx);
     this.detectCollisions();
-    this.addAsteroids(Math.floor(Math.random() * 1.05));
+    if (this.zoomCount !== 0) {
+      this.zoomOut();
+    }
+    this.addAsteroids(Math.floor(Math.random() * 1.2));
   };
+
+  Game.prototype.zoomOut = function(){
+    this.zoomScale *= 0.99;
+    this.screenCenter[0] += (this.cameraCenter[0] - this.screenCenter[0]) / this.zoomCount;
+    this.screenCenter[1] += (this.cameraCenter[1] - this.screenCenter[1]) / this.zoomCount;
+    console.log(this.screenCenter)
+    this.zoomCount -= 1;
+    this.scale = 1/this.zoomScale;
+    this.ctx.lineWidth = this.scale;
+    this.ship.scale = this.scale;
+  };
+
 
   Game.prototype.start = function() {
     this.bindKeyHandlers();

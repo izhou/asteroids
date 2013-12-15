@@ -6,10 +6,11 @@
 <body>
 
   <!-- first load the jQuery library hosted by Google -->
-  <script type="application/javascript"
+  <!--<script type="application/javascript"
            src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
   </script>
-  <!-- then load our own app.js code -->
+  then load our own app.js code -->
+  <script type="application/javascript" src="jquery.min.js"></script>
   <script type="application/javascript" src="underscore.js"></script>
   <script type="application/javascript" src="keymaster.min.js"></script>
   <script type="application/javascript" src="inheritance.js"></script>
@@ -18,37 +19,122 @@
   <script type="application/javascript" src="bullet.js"></script>
   <script type="application/javascript" src="ship.js"></script>
   <script type="application/javascript" src="game.js"></script>
-  <audio id = "myMusic" src = "Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"> </audio>
-  <div id = 'muzak' style='display: inline-block; position:absolute; bottom:20px; right:20px; font-size: 28;font-family:Arial; color:purple;'>Muzak</div>
-  <div id = 'score'></div>
+  <style type="text/css">
+    .text {
+      display: inline-block;
+      font-size: 28; 
+      font-family:'Ocr a std', 'arial';
+      color:purple
+    }
 
-  <script>
-    var music = true;
-    $('#muzak').click(function() {
-      console.log('click');
-      if (music) {
-        myMusic.pause();
-      } else {
-        myMusic.play();
+    canvas {
+      display: inline-block;
+      position: absolute;
+      bottom:0px;
+      right:0px;
+    }
+
+    #buttons {
+      z-index: 1000;
+      display: inline-block; 
+      position:absolute;
+      bottom:20px;
+      right:20px; 
+    }
+
+/*    #score {
+      display: inline-block; 
+      position:absolute;
+      top:50px;
+      left:50px; 
+    }*/
+
+    #startPanel{
+      z-index: 1000;
+      color: white;
+      font-size: 200%;
+      border: 3px white solid;
+      display: inline-block;
+      position:absolute;
+      height:300px;
+      width:600px;
+      margin-top: -150px;
+      margin-left:-300px;
+      top:50%;
+      left:50%;
+      text-align: center;
+      padding:20px;
+      border-radius: 20px;    
       }
-      music = !music;
+
+    body{
+      background: black;
+    }
+    #sfxButton {
+      font-family: 'arial';
+    }
+  </style>
+  <audio id = "music" src = "Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"></audio>
+  <audio id = "explosionSound" src = "explosion.wav" type = "audio/mpeg"> </audio>
+  <audio id = "laserSound" src = "fireBullet.wav" type = "audio/mpeg"> </audio>
+  <audio id = "sizeUpSound" src = "levelUp.wav" type = "audio/mpeg"> </audio>
+  <div class='text' id = 'startPanel'>
+    ASTEROIDS DAMACY
+    <br><br><br>
+    <div class='text' id='playGame'>Play Game</div>
+  </div>
+  
+  <div class='text' id='buttons'>
+    <div class='text' id = 'musicButton'></div>
+    <div class='text' id = 'sfxButton'></div>
+    <div class='text' id ='pauseButton'></div>
+  </div>
+  <!-- <div class='text' id = 'score'></div> -->
+  <script>
+    var musicOn = true;
+
+    $('#musicButton').click(function() {
+      console.log('click');
+      if (musicOn) {
+        music.pause();
+      } else {
+        music.play();
+      }
+      musicOn = !musicOn;
     });
 
-    myMusic.play();
+    music.play();
     var canvas = document.createElement("canvas");
+    $('body').append(canvas);
     var ctx = canvas.getContext("2d");
 
     //var body = document.getElementsByTagName("body")[0];
-    $('body').append(canvas);
+    
 
-    game = new Asteroids.Game(canvas.getContext("2d"));
-    canvas.setAttribute("width", game.dimX);
-    canvas.setAttribute("height", game.dimY);
-    game.start();
+
+    
+    $('#playGame').click(function(){
+      $('#startPanel').hide();
+      game = new Asteroids.Game(canvas.getContext("2d"));
+      canvas.setAttribute("width", game.dimX);
+      canvas.setAttribute("height", game.dimY);
+      game.start();
+    })
+    
+
+
+    $('#musicButton').html(String.fromCharCode(0x266B));
+    $('#pauseButton').html('\u2161')
+    //$('#sfxButton').html(String.fromCharCode(0x0001F50A));
+    
+
+    //$('#pauseButton').html(String.fromCharCode(0x2161));
+    $('#sfxButton').html('\uD83D\uDD08');
+
+    //0x25B8
 
   </script>
 
   foobar
 </body>
-
 </html>

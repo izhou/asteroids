@@ -2,11 +2,15 @@
 
   var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-  var Bullet = Asteroids.Bullet = function(ship, game) {
+  var Bullet = Asteroids.Bullet = function(ship, game, scale) {
     this.ship = ship;
     var shipFront = ship.transformedCoords()[0];
     this.game = game;
-    Asteroids.MovingObject.call(this, shipFront, Bullet.VEL, ship.angle, Bullet.COORDS, Bullet.RADIUS, Bullet.COLOR, ship.angle);
+    this.coordinates = _.map(Bullet.COORDS, function(coord) {
+      return [coord[0] * scale, coord[1] * scale];
+    })
+    this.vel = Bullet.VEL * scale;
+    Asteroids.MovingObject.call(this, shipFront, this.vel, ship.angle, this.coordinates, Bullet.RADIUS, Bullet.COLOR, ship.angle);
   }
 
   Bullet.inherits(Asteroids.MovingObject);
@@ -16,8 +20,8 @@
   Bullet.RADIUS = 6;
   Bullet.COLOR = "red";
 
-  Bullet.fireBullet = function(game) {
-    return new Bullet(game.ship, game)
+  Bullet.fireBullet = function(game, scale) {
+    return new Bullet(game.ship, game, scale)
   }
 
   Bullet.prototype.isCollidedWith = function(otherObject) {
@@ -28,5 +32,6 @@
       return false;
     }
   };
+
 
 })(this)
