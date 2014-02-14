@@ -21,7 +21,9 @@
   Bullet.COLOR = "red";
 
   Bullet.fireBullet = function(game, scale) {
-    return new Bullet(game.ship, game, scale)
+    if (!game.ship.isDead) {
+      return new Bullet(game.ship, game, scale);  
+    }
   }
 
   Bullet.prototype.isCollidedWith = function(otherObject) {
@@ -32,6 +34,5 @@
       return false;
     }
   };
-
 
 })(this)

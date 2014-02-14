@@ -1,5 +1,6 @@
 <html>
 <head>
+  <link rel="stylesheet" href="font-awesome-4.0.3/css/font-awesome.min.css">
   <title>A page for you!</title>
 </head>
 
@@ -12,19 +13,42 @@
   then load our own app.js code -->
   <script type="application/javascript" src="jquery.min.js"></script>
   <script type="application/javascript" src="underscore.js"></script>
-  <script type="application/javascript" src="keymaster.min.js"></script>
   <script type="application/javascript" src="inheritance.js"></script>
-  <script type="application/javascript" src="moving_object.js"></script>
+  <script type="application/javascript" src="movingObject.js"></script>
   <script type="application/javascript" src="asteroid.js"></script>
   <script type="application/javascript" src="bullet.js"></script>
   <script type="application/javascript" src="ship.js"></script>
+  <script type="application/javascript" src="shipFrag.js"></script>
+  <script type="application/javascript" src="star.js"></script>
   <script type="application/javascript" src="game.js"></script>
   <style type="text/css">
+
     .text {
       display: inline-block;
-      font-size: 28; 
+      font-size: 28px; 
       font-family:'Ocr a std', 'arial';
-      color:purple
+      color:purple;
+      text-align: center;
+    }
+
+    .text-sm {
+      display: inline-block;
+      font-size: 20px; 
+      color:purple;
+      text-align: center;
+      width: 18px;
+    }
+
+    .text:hover {
+      cursor: default;
+    }
+
+    .button:hover {
+      color:red;
+      cursor:pointer;
+      /*cursor:hand;*/
+      /*font-weight: bold;*/
+      text-align: center;
     }
 
     canvas {
@@ -42,94 +66,234 @@
       right:20px; 
     }
 
-/*    #score {
-      display: inline-block; 
-      position:absolute;
-      top:50px;
-      left:50px; 
-    }*/
+    .score {
+      color: red;
+      font-size: 32;
+      font-weight: bold;
+    }
 
-    #startPanel{
+    #pausePanel {
+      z-index: 1000;
+      display: inline-block;
+      position: absolute;
+      height:50px;
+      width:100px;
+      margin-top:-25px;
+      margin-left: -50px;
+      top:50%;
+      left:50%;
+      color:red;
+    }
+
+    #closeButton {
+      display: inline-block;
+      position: absolute;
+      bottom: 10px;
+      right:20px;
+    }
+
+
+    .panel{
       z-index: 1000;
       color: white;
       font-size: 200%;
       border: 3px white solid;
       display: inline-block;
       position:absolute;
-      height:300px;
-      width:600px;
+      height:250px;
+      width:500px;
       margin-top: -150px;
       margin-left:-300px;
       top:50%;
       left:50%;
       text-align: center;
-      padding:20px;
+
+      padding:50px;
       border-radius: 20px;    
-      }
+      background-color: black;
+    }
 
     body{
       background: black;
     }
+
+    .iButton{
+      display: inline-block;
+      position: absolute;
+      bottom:20px;
+      right:20px;
+      font-size: 20px;
+      text-align: center;
+      color:white;
+      width: 20px;
+      height: 20px; 
+    }
+
+    #question{
+      right:50px;
+    }
+
+    .iButton:hover {
+      color: red;
+    }
+
     #sfxButton {
       font-family: 'arial';
     }
   </style>
-  <audio id = "music" src = "Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"></audio>
-  <audio id = "explosionSound" src = "explosion.wav" type = "audio/mpeg"> </audio>
-  <audio id = "laserSound" src = "fireBullet.wav" type = "audio/mpeg"> </audio>
-  <audio id = "sizeUpSound" src = "levelUp.wav" type = "audio/mpeg"> </audio>
-  <div class='text' id = 'startPanel'>
+  <audio id = "music" src = "sound/Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"></audio>
+
+  <div class='text panel' id = 'startPanel'>
     ASTEROIDS DAMACY
-    <br><br><br>
-    <div class='text' id='playGame'>Play Game</div>
+    <br>
+    <div class = 'text name' style='font-size :13; color:white;'>Irene Zhou</div>
+    <br>
+    <br><br>
+    <div class='text button playGame'>PLAY  GAME</div>
+    <br>
+    <div class='text button highScores' style='font-size:23'>High Scores</div>
+    <br>
+    <div class='text iButton' id='question'> ? </div>
+    <div class='text iButton' id='infoButton'><i class="fa fa-info-circle"></i></div>
+    <!-- <div class='text' id='infoButton'> i </div>   -->
+  </div>
+
+  <div class='text panel' id = 'endPanel'>
+    <div class= 'endMessage'>DEATH BECOMES YOU</div>
+    <br>
+    <div class='text score'></div>
+    <br>
+    <div class='text button showSubmitPanel'>SUBMIT SCORE</div>
+    <br><br>
+    <div class='text button playGame'>Play Again</div>
+    <br>
+    <div class='text button mainMenu'>Main Menu</div>
+    <br>
+  </div>
+
+  <div class='text panel' id = 'submitScorePanel'>
+    <div class= 'endMessage'></div>
+    <br>
+    <br>
+    <div class='text score'></div>
+    <br>
+<!--     <form action = '/submitScore' method='post'>
+      <input class = 'text' type='text' value='NAME' id='name' autofocus>
+      <br>
+      <input class='text' type='submit' value='SUBMIT SCORE'>
+    </form> -->
+    <div class='text button submitScore' style='background-color:black; border:none' onclick='game.submitScore();'>SUBMIT SCORE</div>
+    <br><br>
+    <br>
+  </div>
+
+
+  <div class='text panel' id = 'infoPanel'>
+    <div id='closeButton'>x</div>
+    <div style='font-size :13; color:white;'>
+      Code and concept developed by Irene Zhou
+      <br>
+      Written in Javascript and HTML5 Canvas
+      <br>
+      Song by Virt5
+      <br>
+      Sound effects by FOOO
+      <br>
+      ire.ne
+    </div>
   </div>
   
-  <div class='text' id='buttons'>
-    <div class='text' id = 'musicButton'></div>
-    <div class='text' id = 'sfxButton'></div>
-    <div class='text' id ='pauseButton'></div>
+  <div class='text' id ='pausePanel'>
+  PAUSED
   </div>
-  <!-- <div class='text' id = 'score'></div> -->
+
+  <div class='text' id='buttons'>
+    <div class='text-sm button' id = 'musicButton' style = 'width: 32px !important'><span class="fa-stack"><i class="fa fa-music fa-stack-1x"></span></i></div>
+    <div class='text-sm button' id = 'sfxButton'><i class="fa fa-volume-down fa-lg"></i></div>
+    <div class='text-sm button' id ='pauseButton'><i class='fa fa-pause'></i></div>
+  </div>
+
   <script>
+    $('.panel').hide();
+    $('#startPanel').show();
+    $('#pausePanel').hide();
+    $('#buttons').hide();
     var musicOn = true;
+    var sfxOn = true;
+    music.loop = true;
+    var canvas = document.createElement("canvas");
+    $('body').append(canvas);
 
     $('#musicButton').click(function() {
-      console.log('click');
       if (musicOn) {
         music.pause();
+        $('#musicButton').html('<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></i><i class="fa fa-ban fa-stack-1x" style="font-size:1.5em; line-height:1.4; margin-left:2px;"></i></span>');
       } else {
         music.play();
+        $('#musicButton').html('<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></span>');
       }
       musicOn = !musicOn;
     });
 
-    music.play();
-    var canvas = document.createElement("canvas");
-    $('body').append(canvas);
-    var ctx = canvas.getContext("2d");
+    $('#sfxButton').click(function() {
+      $('#sfxButton').html((sfxOn) ? '<i class="fa fa-volume-off fa-lg"></i><a style="opacity:0">-</a>' :'<i class="fa fa-volume-down fa-lg"></i>');
+      sfxOn = !sfxOn;
+    });
 
     //var body = document.getElementsByTagName("body")[0];
-    
-
-
-    
-    $('#playGame').click(function(){
-      $('#startPanel').hide();
+        
+    $('.playGame').click(function(){
+      $('#buttons').show();
+      $('.panel').hide();
       game = new Asteroids.Game(canvas.getContext("2d"));
       canvas.setAttribute("width", game.dimX);
       canvas.setAttribute("height", game.dimY);
       game.start();
+      if (musicOn) music.play();
     })
+
+    $('.mainMenu').click(function(){
+      $('#endPanel').hide();
+      $('#startPanel').show();
+    })
+
+    $('#pauseButton').click(function() {
+      game.pause();
+    })
+
+    $('#infoButton').click(function() {
+      $('#infoPanel').show();
+    })
+
+    $('#closeButton').click(function() {
+      $('#infoPanel').hide();
+    })
+
+    $('.showSubmitPanel').click(function() {
+      console.log('wtf');
+      $('.panel').hide();
+      $('#submitScorePanel').show();
+    });
+    // setTimeout( function(){
+    //   // console.log('wup');
+    //   if (typeof(game) != "undefined") {
+    //     game.endGame();
+    //   }
+    //   $('#endPanel').show();
+    //   $('#endPanel').html('GET THE FUCK BACK TO WORK');
+    //   $('#startPanel').html('SUCKER.');
+    //   noGo = true;        
+    // }, 300000);
+
+
     
-
-
-    $('#musicButton').html(String.fromCharCode(0x266B));
-    $('#pauseButton').html('\u2161')
+    // $('#musicButton').html(String.fromCharCode(0x266B));
+    // $('#pauseButton').html('\u2161')
     //$('#sfxButton').html(String.fromCharCode(0x0001F50A));
     
 
     //$('#pauseButton').html(String.fromCharCode(0x2161));
-    $('#sfxButton').html('\uD83D\uDD08');
+    // $('#sfxButton').html('\uD83D\uDD08');
 
     //0x25B8
 

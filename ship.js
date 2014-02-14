@@ -2,12 +2,23 @@
 
   var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-  var Ship = Asteroids.Ship = function (pos) {
-    Asteroids.MovingObject.call(this, pos, Ship.START_VEL, Ship.START_ANGLE, Ship.COORDS, Ship.RADIUS, Ship.COLOR, Ship.START_ROTATION);
+  var Ship = Asteroids.Ship = function (pos, scale, radius, angle) {
+    Asteroids.MovingObject.call(this, pos, Ship.START_VEL, this.angle, Ship.COORDS, this.radius, Ship.COLOR, Ship.START_ROTATION);
     var that = this;
+    this.pos = pos;
+    this.angle = angle || Ship.START_ANGLE;
     this.angle_vel = 0;
-    this.coordinates = [[-15,0],[10,10],[10,-10]];
-    this.scale = 1;
+    this.scale = scale || 1;
+    this.radius = radius || Ship.RADIUS;
+    this.maxVel = function() {
+      return that.scale * -500;
+    }
+
+    this.coordinates = _.map(Ship.COORDS, function(coord) {
+      return [coord[0] * that.radius, coord[1] * that.radius];
+    })
+    this.isGhost = false;
+    this.isShattered = false;
   };
 
   Ship.inherits(Asteroids.MovingObject);
@@ -17,35 +28,45 @@
   Ship.START_ROTATION = Ship.START_ANGLE; //rotation angle is same as direction
   Ship.COLOR = "#ADFF2F";
   Ship.RADIUS = 10;
-  Ship.COORDS = [[-1.5,0],[1,1],[1,-1]];
-  Ship.MAX_VEL = -5;
+  Ship.COORDS = [[-1.25,0],[1.25,1],[1.25,-1]];
+  
   Ship.MAX_ANGLE_VEL = Math.PI;
 
-  Ship.buildShip = function(pos) {
-    return new Ship(pos);
+  Ship.buildShip = function(pos, scale, radius) {
+    return new Ship(pos, scale, radius);
   }
 
-  Ship.prototype.move = function() {
+  Ship.prototype.move = function(elapsedSeconds) {
     this.angle += this.angle_vel;
     this.rotation = this.angle;
-    this.angle_vel = this.angle_vel*0.95;
-    this.centerX += Math.cos(this.angle) * this.vel;
-    this.centerY += Math.sin(this.angle) * this.vel;
-    this.pos = [this.centerX, this.centerY];
+    this.angle_vel *= 0.95;
+    if (this.vel >= 0) {
+      this.vel *= 0.94;
+    } else {
+      this.vel *= 0.996;
+    }
 
+    Asteroids.MovingObject.prototype.move.call(this, elapsedSeconds);
   };
 
   Ship.prototype.power = function(impulse) {
-    this.vel -= impulse * 4 * this.scale;
-    if (this.vel < Ship.MAX_VEL * this.scale) {
-      this.vel = Ship.MAX_VEL * this.scale;
-    } else if (this.vel > 0) {
-      this.vel = 0;
+    var maxVel = this.maxVel();
+    this.vel -= impulse * 600 * this.scale;
+    if (this.vel < maxVel * this.scale) {
+      this.vel = maxVel * this.scale;
+    } else if (this.vel > -maxVel * this.scale) {
+      this.vel = -maxVel * this.scale;
     }
+    // console.log(maxVel);
+    // console.log(this.vel);
+  }
+
+  Ship.prototype.fragment = function(scale) {
+    return [new Asteroids.shipFrag(this.pos, this.radius, this.angle, this.pos)];
   }
 
   Ship.prototype.rotate = function(direction) {
-    this.angle_vel += direction * 0.2;
+    this.angle_vel += direction * 0.22;
   };
 
   Ship.prototype.grow = function() {
@@ -54,5 +75,32 @@
       return [coord[0] * that.radius, coord[1] * that.radius];
     });
   };
+
+  Ship.prototype.ghost = function() {
+    var s = this;
+    this.isGhost = true;
+    this.color = 'rgba(173, 255, 47, 0.3)';
+    blinkCount = 1;
+    setTimeout(function() {
+      console.log("ghostin");
+      var blink = setInterval(function() {
+        console.log("blinkin");
+        if (blinkCount % 2 === 1) {
+          s.color = 'rgba(173, 255, 47, 0.3)';
+        } else {
+          s.color = 'rgba(173, 255, 47, 1)';
+        }
+        blinkCount += 1;
+        if (blinkCount > 30) {
+          s.isGhost = false;
+          clearInterval(blink);
+        }
+      }, 30);
+    }, 1500);
+  }
+
+  // Ship.prototype.fragments = function(pos, angle) {
+
+  // }
 
 })(this)
