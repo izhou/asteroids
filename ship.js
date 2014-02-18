@@ -62,7 +62,9 @@
   }
 
   Ship.prototype.fragment = function(scale) {
-    return [new Asteroids.shipFrag(this.pos, this.radius, this.angle, this.pos)];
+    var shipFragment = new Asteroids.shipFrag(this.pos, this.angle, this.radius, this.coordinates, this.pos, 100);
+    // console.log(shipFragment);
+    return shipFragment.shatter();
   }
 
   Ship.prototype.rotate = function(direction) {
@@ -82,9 +84,7 @@
     this.color = 'rgba(173, 255, 47, 0.3)';
     blinkCount = 1;
     setTimeout(function() {
-      console.log("ghostin");
       var blink = setInterval(function() {
-        console.log("blinkin");
         if (blinkCount % 2 === 1) {
           s.color = 'rgba(173, 255, 47, 0.3)';
         } else {

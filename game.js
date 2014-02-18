@@ -132,6 +132,7 @@
       } else {
         g.livesLeft -= 1;
         setTimeout(function(){
+          this.lastShatterTime = 100;
           g.ship = Asteroids.Ship.buildShip([(g.dimX/2 - g.screenCenter[0]) * g.scale ,(g.dimY/2 - g.screenCenter[1]) * g.scale], g.scale, g.ship.radius);
           g.shipFragments = [];
           g.ship.ghost();
@@ -386,9 +387,14 @@
 
     if (this.ship.isShattered) {
       var now = (+ new Date)/1000;
-      if ((now - this.lastShatterTime) >= 0.2) {
+      if ((now - this.lastShatterTime) >= 0.1) {
         this.shipFragments = _.flatten(this.shipFragments.map(function(fragment) {
-          return fragment.fragment();
+          if (Math.random() > 0.8) return fragment.shatter();
+          return fragment;
+        }));
+        this.shipFragments = _.flatten(this.shipFragments.map(function(fragment) {
+          if (Math.random() > 0.95) return fragment.shatter();
+          return fragment;
         }));
         this.lastShatterTime = now;
       }
