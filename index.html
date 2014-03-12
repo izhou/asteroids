@@ -231,6 +231,69 @@
     <div class='text-sm button' id ='fwdButton'><i class='fa fa-arrow-right'>b</i></div>
   </div>
 
+  <script>
+
+
+  // var submitScore = function() {
+  //   var submitScore = new XMLHttpRequest();
+  //   var user = document.getElementById("user").value;
+  //   var address = "./addScore?user=" + user +"&score=" + game.ship.size;
+  //   submitScore.open("post", address, true);
+  //   submitScore.send();
+  //   $('#submitScorePanel').hide();
+  //   $('#HighScorePanel').show();
+  //   submitScore.onreadystatechange=function() {
+  //     if (submitScore.readyState == 4 && submitScore.status == 200) {
+  //       showScoresByUser(user);
+  //     }
+  //   }
+  // }
+
+  // var createTable = function(minRank, array) {
+  //   var table = '<table>'
+  //   for (var i = 0; i < 5; i++) {
+  //     var row = '<tr>';
+  //     row += '<td>'+ (minRank + i + 1) +')</td>' 
+  //     _.times(2, function() {
+  //       row += '<td>' + array.shift() + '</td>';
+  //     });
+  //     row += '</tr>'
+  //     table += row;
+  //   }
+  //   table += '</table>'
+  //   console.log(table);
+  //   return table;
+  // }
+
+  // var showScoresByUser = function(user) {
+  //   var address = "./scores?user=" + user;
+  //   showScores(address);
+  // }
+
+  // var showScoresByPage = function(page) {
+  //   highScoresPage = page;
+  //   var address = "./scores?page=" + page;
+  //   showScores(address);
+  // }
+
+  // var showScores = function(address) {
+  //   var scores = new XMLHttpRequest();
+  //   scores.open("get", address, true);
+  //   scores.send();
+  //   scores.onreadystatechange=function() {
+  //     if (scores.readyState==4 && scores.status==200) {
+  //       console.log(scores.responseText);
+  //       var response = JSON.parse(scores.responseText);
+  //       var minRank = parseInt(response.shift());
+  //       highScoresPage = (minRank - 1) / 5;
+  //       var array = response;
+  //       $('#highScores').html(createTable(minRank, array));
+  //     }
+  //   }   
+  // }
+
+  </script>
+
   <div class='text panel' id = 'infoPanel'>
     <div id='closeButton'>x</div>
     <div style='font-size :13; color:white;'>

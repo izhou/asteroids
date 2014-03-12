@@ -6,6 +6,7 @@ var url = require('url');
 var redis = require('redis');
 
 
+// var client = redis.createClient(6379, "asteroidsdamacy.suhesb.0001.usw2.cache.amazonaws.com");
 var client = redis.createClient(11021, "barreleye.redistogo.com", {
   auth_pass: '5da6e19474dd21b8a4cf681f79a3d915'
 });
@@ -156,13 +157,10 @@ var server = http.createServer(function(req, res) {
         }
       });
     } else {
-      console.log(filePath);
       res.writeHead(404);
-      console.log('durnit');
       res.end();
     }
   })
 });
 
 server.listen(8192);
-console.log('foo');
