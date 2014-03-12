@@ -1,17 +1,14 @@
 <html>
 <head>
-  <link rel="stylesheet" href="font-awesome-4.0.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> -->
+  <!-- <link rel="stylesheet" href="font-awesome-4.0.3/css/font-awesome.min.css"> -->
   <title>A page for you!</title>
 </head>
 
 <body>
-
-  <!-- first load the jQuery library hosted by Google -->
-  <!--<script type="application/javascript"
-           src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-  </script>
-  then load our own app.js code -->
-  <script type="application/javascript" src="jquery.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <script type="application/javascript" src="underscore.js"></script>
   <script type="application/javascript" src="inheritance.js"></script>
   <script type="application/javascript" src="movingObject.js"></script>
@@ -21,6 +18,7 @@
   <script type="application/javascript" src="shipFrag.js"></script>
   <script type="application/javascript" src="star.js"></script>
   <script type="application/javascript" src="game.js"></script>
+  <script type="application/javascript" src="scoreboard.js"></script>
   <style type="text/css">
 
     .text {
@@ -36,7 +34,7 @@
       font-size: 20px; 
       color:purple;
       text-align: center;
-      width: 18px;
+      width: 20px;
     }
 
     .text:hover {
@@ -63,7 +61,7 @@
       display: inline-block; 
       position:absolute;
       bottom:20px;
-      right:20px; 
+      right:25px; 
     }
 
     .score {
@@ -92,6 +90,32 @@
       right:20px;
     }
 
+    #backButton {
+      display: inline-block;
+      position: absolute;
+      bottom: 50px;
+      left:50px;      
+    }
+
+    #fwdButton {
+      display: inline-block;
+      position: absolute;
+      bottom: 50px;
+      right:50px;
+    }
+
+    #newGame {
+      display: inline-block;
+      position: absolute;
+      bottom: 50px;
+      right:225px;
+    }
+
+    #highScoresTable {
+
+    }
+
+
 
     .panel{
       z-index: 1000;
@@ -107,10 +131,22 @@
       top:50%;
       left:50%;
       text-align: center;
-
+      box-sizing: content-box !important;
       padding:50px;
       border-radius: 20px;    
       background-color: black;
+    }
+
+    .scoreSubmission {
+      display: inline-block;
+      text-align: center;
+      position: relative;
+      width: 300px;
+
+      /*position: absolute;*/
+      /*margin:0 auto;*/
+
+
     }
 
     body{
@@ -160,33 +196,40 @@
 
   <div class='text panel' id = 'endPanel'>
     <div class= 'endMessage'>DEATH BECOMES YOU</div>
+    <div class='scoreSubmission'>
+      <div class='text score'></div>
+      <br>
+      <div class='text button showSubmitPanel'>SUBMIT SCORE</div>
+    </div>
     <br>
-    <div class='text score'></div>
-    <br>
-    <div class='text button showSubmitPanel'>SUBMIT SCORE</div>
-    <br><br>
-    <div class='text button playGame'>Play Again</div>
-    <br>
-    <div class='text button mainMenu'>Main Menu</div>
-    <br>
+    <div style='text-align:center;'>
+      <div class='text button playGame'>Play Again</div><br>
+      <div class='text button mainMenu'>Main Menu</div>
+    </div>
   </div>
 
   <div class='text panel' id = 'submitScorePanel'>
-    <div class= 'endMessage'></div>
-    <br>
-    <br>
-    <div class='text score'></div>
-    <br>
-<!--     <form action = '/submitScore' method='post'>
-      <input class = 'text' type='text' value='NAME' id='name' autofocus>
+      <form id='submitForm' method="POST" action="post-handler.php" onsubmit="submitForm(this);">
+      <input class = 'text' type='text' style = 'background-color:black; border:none' id='user' autofocus>
+      <br><br>
+      <div class='text score'></div>
       <br>
-      <input class='text' type='submit' value='SUBMIT SCORE'>
-    </form> -->
-    <div class='text button submitScore' style='background-color:black; border:none' onclick='game.submitScore();'>SUBMIT SCORE</div>
+      </form>
+    <div class='text button submitScore' style='background-color:black; border:none' 
+      onclick='highScores.addScore();'>SUBMIT SCORE</div>
     <br><br>
     <br>
   </div>
 
+  <div class='text panel' id='HighScorePanel'>
+    HIGH SCORES
+    <br>
+    <div class='text' id='highScores'></div>
+    <br>
+    <div class='text-sm button' id ='backButton'><i class='fa fa-arrow-left'>a</i></div>
+    <div class='text' id='newGame'>NEW GAME</div>
+    <div class='text-sm button' id ='fwdButton'><i class='fa fa-arrow-right'>b</i></div>
+  </div>
 
   <div class='text panel' id = 'infoPanel'>
     <div id='closeButton'>x</div>
@@ -209,7 +252,7 @@
 
   <div class='text' id='buttons'>
     <div class='text-sm button' id = 'musicButton' style = 'width: 32px !important'><span class="fa-stack"><i class="fa fa-music fa-stack-1x"></span></i></div>
-    <div class='text-sm button' id = 'sfxButton'><i class="fa fa-volume-down fa-lg"></i></div>
+    <div class='text-sm button' id = 'sfxButton'><i class="fa fa-volume-down fa-lg"></i> </div>
     <div class='text-sm button' id ='pauseButton'><i class='fa fa-pause'></i></div>
   </div>
 
@@ -218,9 +261,11 @@
     $('#startPanel').show();
     $('#pausePanel').hide();
     $('#buttons').hide();
+    // $('#submitScorePanel').show();
     var musicOn = true;
     var sfxOn = true;
     music.loop = true;
+    var highScores = new Asteroids.Scoreboard();
     var canvas = document.createElement("canvas");
     $('body').append(canvas);
 
@@ -236,7 +281,7 @@
     });
 
     $('#sfxButton').click(function() {
-      $('#sfxButton').html((sfxOn) ? '<i class="fa fa-volume-off fa-lg"></i><a style="opacity:0">-</a>' :'<i class="fa fa-volume-down fa-lg"></i>');
+      $('#sfxButton').html((sfxOn) ? '<i class="fa fa-volume-off fa-lg"> </i><a style="opacity:0">-</a>' :'<i class="fa fa-volume-down fa-lg"></i>');
       sfxOn = !sfxOn;
     });
 
@@ -245,6 +290,7 @@
     $('.playGame').click(function(){
       $('#buttons').show();
       $('.panel').hide();
+      // scoreBoard = new Asteroids.Scoreboard();
       game = new Asteroids.Game(canvas.getContext("2d"));
       canvas.setAttribute("width", game.dimX);
       canvas.setAttribute("height", game.dimY);
@@ -252,13 +298,39 @@
       if (musicOn) music.play();
     })
 
+    $('.highScores').click(function(){
+      $('#HighScorePanel').show();
+      highScores.currentPage = 0;
+      highScores.showScores();
+
+    })
+
+    $('#backButton').click(function() {
+      highScores.prevPage();
+    })
+
+    $('#fwdButton').click(function() {
+      highScores.nextPage();
+    })
+
     $('.mainMenu').click(function(){
       $('#endPanel').hide();
       $('#startPanel').show();
     })
 
+    $('#newGame').click(function() {
+      $('#HighScorePanel').hide();
+      $('#startPanel').show();
+
+    })
+
     $('#pauseButton').click(function() {
-      game.pause();
+      $('#pauseButton').html((game.isPaused) ? '<i class="fa fa-pause"></i>' :'<i class="fa fa-play"></i>');
+      game.isPaused = !game.isPaused;
+      if (musicOn) {
+        (music.paused) ? music.play() : music.pause();
+      }
+      $('#pausePanel').toggle();
     })
 
     $('#infoButton').click(function() {
@@ -274,31 +346,7 @@
       $('.panel').hide();
       $('#submitScorePanel').show();
     });
-    // setTimeout( function(){
-    //   // console.log('wup');
-    //   if (typeof(game) != "undefined") {
-    //     game.endGame();
-    //   }
-    //   $('#endPanel').show();
-    //   $('#endPanel').html('GET THE FUCK BACK TO WORK');
-    //   $('#startPanel').html('SUCKER.');
-    //   noGo = true;        
-    // }, 300000);
-
-
-    
-    // $('#musicButton').html(String.fromCharCode(0x266B));
-    // $('#pauseButton').html('\u2161')
-    //$('#sfxButton').html(String.fromCharCode(0x0001F50A));
-    
-
-    //$('#pauseButton').html(String.fromCharCode(0x2161));
-    // $('#sfxButton').html('\uD83D\uDD08');
-
-    //0x25B8
 
   </script>
-
-  foobar
 </body>
 </html>

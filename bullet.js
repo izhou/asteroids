@@ -16,7 +16,7 @@
   Bullet.inherits(Asteroids.MovingObject);
 
   Bullet.VEL = -500;
-  Bullet.COORDS = [[-1,-1],[-1,1],[6,1],[6,-1]];
+  Bullet.COORDS = [[-3,-1],[-3,1],[3,1],[3,-1]];
   Bullet.RADIUS = 6;
   Bullet.COLOR = "red";
 

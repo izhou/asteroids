@@ -2,14 +2,15 @@
 
   var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-  var Ship = Asteroids.Ship = function (pos, scale, radius, angle) {
+  var Ship = Asteroids.Ship = function (pos, scale, radius, size) {
     Asteroids.MovingObject.call(this, pos, Ship.START_VEL, this.angle, Ship.COORDS, this.radius, Ship.COLOR, Ship.START_ROTATION);
     var that = this;
     this.pos = pos;
-    this.angle = angle || Ship.START_ANGLE;
+    this.angle = Ship.START_ANGLE;
     this.angle_vel = 0;
     this.scale = scale || 1;
     this.radius = radius || Ship.RADIUS;
+    this.size = size || 250;
     this.maxVel = function() {
       return that.scale * -500;
     }
@@ -32,8 +33,8 @@
   
   Ship.MAX_ANGLE_VEL = Math.PI;
 
-  Ship.buildShip = function(pos, scale, radius) {
-    return new Ship(pos, scale, radius);
+  Ship.buildShip = function(pos, scale, radius, size) {
+    return new Ship(pos, scale, radius, size);
   }
 
   Ship.prototype.move = function(elapsedSeconds) {
@@ -62,7 +63,7 @@
   }
 
   Ship.prototype.fragment = function(scale) {
-    var shipFragment = new Asteroids.shipFrag(this.pos, this.angle, this.radius, this.coordinates, this.pos, 100);
+    var shipFragment = new Asteroids.shipFrag(this.pos, this.angle, this.radius, this.coordinates, this.pos, this.scale, this.vel);
     // console.log(shipFragment);
     return shipFragment.shatter();
   }
@@ -70,6 +71,15 @@
   Ship.prototype.rotate = function(direction) {
     this.angle_vel += direction * 0.22;
   };
+
+  Ship.prototype.resize = function(area) {
+    this.size += Math.floor(area);
+    this.radius = Math.sqrt(0.4 * this.size);
+    var that = this;
+    this.coordinates = _.map(Ship.COORDS, function(coord) {
+      return [coord[0] * that.radius, coord[1] * that.radius];
+    });
+  }
 
   Ship.prototype.grow = function() {
     var that = this;
