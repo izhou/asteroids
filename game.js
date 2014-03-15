@@ -8,7 +8,7 @@
     this.bullets = [];
     this.asteroids = [];
     this.ship = Asteroids.Ship.buildShip([0,0]);
-    this.livesLeft = 100;
+    this.livesLeft = 3;
     this.shipFragments = [];
 
     this.time = 0;
@@ -116,7 +116,7 @@
     this.playSound('death');
     if (musicOn) {
       music.pause();
-      music.currentTime = 0;
+      // music.currentTime = 0;
     }
 
     var g = this;
@@ -137,10 +137,10 @@
             if (musicOn) {
               music.play();
             }
-          }, 1000);
+          }, 1500);
         }, 500);
       }
-    }, 300)
+    }, 800)
   };
 
   Game.prototype.isOutOfBounds = function(object) {
@@ -194,7 +194,7 @@
 
     if ((now - this.lastBulletTime) >= 0.2) {
       this.playSound('laser');
-      this.ship.resize(-6 * this.scale * this.scale);
+      // this.ship.resize(-6 * this.scale * this.scale);
       // var laserSound = new Audio('sound/fireBullet.wav')
       // laserSound.play();
       // console.log(soundOn);
@@ -299,8 +299,6 @@
     ctx.restore();
 
     ctx.fillStyle = "red";
-    // ctx.textAlign = "center";
-    // ctx.textBaseline = "middle";
     ctx.font = "bold 28px ocr a std";
     ctx.fillText(this.ship.size, 50, 50);
     // ctx.scale(.999,.999)
@@ -451,6 +449,7 @@
 
   Game.prototype.endGame = function() {
     var g = this;
+    music.load();
     cancelAnimationFrame(this.animationFrame);
     var fadeOut = setInterval(function() {
       var height = canvas.getAttribute("height");
@@ -467,7 +466,12 @@
   };
 
   Game.prototype.pause = function() {
-
+    $('#pauseButton').html((game.isPaused) ? '<i class="fa fa-pause"></i>' :'<i class="fa fa-play"></i>');
+    this.isPaused = !this.isPaused;
+    if (musicOn) {
+      (music.paused) ? music.play() : music.pause();
+    }
+    $('#pausePanel').toggle();
 
   }
 

@@ -4,11 +4,9 @@
   var shipFrag = Asteroids.shipFrag = function(shipPos, shipAngle, radius, coordinates, pos, scale, shipVel) {
     this.shipPos = shipPos;
     this.shipAngle = shipAngle;
-    // console.log(shipVel);
     this.shipVel = shipVel;
     this.pos = pos;//CENTROID THAT NEEDS TO BE RECALCULATED
     this.scale = scale;
-    // this.vel = 30 * (Math.random() * 0.9 + 0.1) * scale 
     this.vel = 30 * (Math.random() * 0.9 + 0.1) * scale;
     this.angle =  Math.random() * Math.PI - Math.PI/2 + Math.atan2(( pos[1] - shipPos[1]), (pos[0]- shipPos[0])); //CALC BASED ON CENTROID RELATIVE TO INIT SHIP POS
     this.coordinates = coordinates;//GENERALLY A TRIANGLE
@@ -17,7 +15,6 @@
 
     Asteroids.MovingObject.call(this, this.pos, this.vel, this.angle, this.coordinates, this.radius, shipFrag.COLOR, this.rotation);
     this.rotationSpeed = Math.random() * 0.06 - 0.03;
-    // console.log(this);
   };
   shipFrag.COLOR = "#ADFF2F";
   shipFrag.inherits(Asteroids.MovingObject);

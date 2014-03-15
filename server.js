@@ -57,52 +57,50 @@ var server = http.createServer(function(req, res) {
     return;
   };
 
-  if (req.method === "GET" && parsedUrl.pathname ==='./scores') {
-    var NUM_SCORES = 5;
-    console.log(parsedUrl);
+  // if (req.method === "GET" && parsedUrl.pathname ==='./scores') {
+  //   var NUM_SCORES = 5;
 
-    var returnPage = function(page) {
-      var min = page * NUM_SCORES;
-      client.zrevrange("scores", min, min + NUM_SCORES, 'WITHSCORES', function(err, scores) {
-        if (err) {
-          res.writeHead(500);
-        } else {
-          res.writeHead(200);
-          scores.splice(0,0,min); //add minimum rank
-          console.log(scores); 
-          res.write(JSON.stringify(scores));
-          res.end();
-        }
-      });
-    }
+  //   var returnPage = function(page) {
+  //     var min = page * NUM_SCORES;
+  //     client.zrevrange("scores", min, min + NUM_SCORES, 'WITHSCORES', function(err, scores) {
+  //       if (err) {
+  //         res.writeHead(500);
+  //       } else {
+  //         res.writeHead(200);
+  //         scores.splice(0,0,min); //add minimum rank 
+  //         res.write(JSON.stringify(scores));
+  //         res.end();
+  //       }
+  //     });
+  //   }
 
-    var user = parsedUrl.query.user;
-    var page = parsedUrl.query.page;
+  //   var user = parsedUrl.query.user;
+  //   var page = parsedUrl.query.page;
 
-    if (user) {
-      console.log(user);
-      client.zrevrank("scores", user, function(err, rank) {
-        if (err) {
-          res.writeHead(500);
-          res.end();
-          return;
-        } else {
-          console.log(rank);
-          console.log("pageIs"+Math.floor(rank / NUM_SCORES))
-          returnPage(Math.floor(rank / NUM_SCORES))
-        }
-      })
-      return;
-    };
+  //   if (user) {
+  //     console.log(user);
+  //     client.zrevrank("scores", user, function(err, rank) {
+  //       if (err) {
+  //         res.writeHead(500);
+  //         res.end();
+  //         return;
+  //       } else {
+  //         console.log(rank);
+  //         console.log("pageIs"+Math.floor(rank / NUM_SCORES))
+  //         returnPage(Math.floor(rank / NUM_SCORES))
+  //       }
+  //     })
+  //     return;
+  //   };
 
-    if (page) {
-      returnPage(page);
-      return;
-    }
+  //   if (page) {
+  //     returnPage(page);
+  //     return;
+  //   }
 
-    returnPage(0);
-    return;
-  }
+  //   returnPage(0);
+  //   return;
+  // }
 
   if (req.method === "GET" && parsedUrl.pathname ==='./getScores') {
     client.zrevrange("scores", 0, 500, 'WITHSCORES', function(err, scores) {
@@ -110,7 +108,7 @@ var server = http.createServer(function(req, res) {
         res.writeHead(500);
       } else {
         res.writeHead(200);
-        console.log(JSON.stringify(scores));
+        // console.log(JSON.stringify(scores));
         res.write(JSON.stringify(scores));
       }
       res.end();
@@ -118,18 +116,18 @@ var server = http.createServer(function(req, res) {
     return;
   }
 
-  if (req.method === "GET" && parsedUrl.pathname ==='./seeScores') {
-    client.zrevrange("scores", 0, -1, 'WITHSCORES', function(err, scores) {
-      if (err) {
-        res.writeHead(500);
-      } else {
-        res.writeHead(200);
-        res.write(JSON.stringify(scores));
-      }
-      res.end();
-    });
-    return;
-  }
+  // if (req.method === "GET" && parsedUrl.pathname ==='./seeScores') {
+  //   client.zrevrange("scores", 0, -1, 'WITHSCORES', function(err, scores) {
+  //     if (err) {
+  //       res.writeHead(500);
+  //     } else {
+  //       res.writeHead(200);
+  //       res.write(JSON.stringify(scores));
+  //     }
+  //     res.end();
+  //   });
+  //   return;
+  // }
 
   var fileExt = path.extname(filePath);
   var contentType = 'text/html';

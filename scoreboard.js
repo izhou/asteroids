@@ -13,7 +13,7 @@
     
   };
 
-  Scoreboard.PAGE_SIZE = 5;
+  Scoreboard.PAGE_SIZE = 7;
 
   Scoreboard.prototype.addScore = function(score) {
     $('#submitScorePanel').hide();
@@ -27,6 +27,8 @@
     submitScore.onreadystatechange=function() {
       if (submitScore.readyState == 4 && submitScore.status == 200) {
         s.scores = s.fetchScores();
+        s.numPages = Math.ceil(s.scores.length/ (2 * Scoreboard.PAGE_SIZE));
+
         s.currentPage = s.findPageFor(user);
         s.showScores();
       }
@@ -58,19 +60,19 @@
   Scoreboard.prototype.showScores = function() {
     var minRank = this.currentPage * Scoreboard.PAGE_SIZE;
     $('#highScores').html(this.createScoresTable(minRank));
-    (this.currentPage === this.numPages) ? $('#fwdButton').hide() : $('#fwdButton').show();
-    (this.currentPage === 0) ? $('#backButton').hide() : $('#backButton').show();
+    (this.currentPage < this.numPages - 1) ? $('#fwdButton').show() : $('#fwdButton').hide();
+    (this.currentPage > 0) ? $('#backButton').show() : $('#backButton').hide();
   }
 
   Scoreboard.prototype.createScoresTable = function(minRank) {
     var scoresToShow = this.scores.slice(minRank * 2, (minRank + Scoreboard.PAGE_SIZE ) * 2);
     var scoresLength = scoresToShow.length / 2;
-    var table = '<table id = highScoresTable>'
+    var table = '<table id = highScoresTable style:"align:center;">'
     for (var i = 0; i < scoresLength; i++) {
       var row = '<tr>';
-      row += '<td width:50px>'+ (minRank + i + 1) +')</td>' 
-      row += '<td style="text-align:left; width:100px;">' + scoresToShow.shift() + '</td>';
-      row += '<td style = "text-align: right; width:200px">' + scoresToShow.shift() + '</td>';
+      row += '<td style="text-align:left; width:30px">'+ (minRank + i + 1) +')</td>' 
+      row += '<td style="text-align:left; width:170px;">' + scoresToShow.shift() + '</td>';
+      row += '<td style = "text-align: right; width:250px">' + scoresToShow.shift() + '</td>';
       row += '</tr>'
       table += row;
     }

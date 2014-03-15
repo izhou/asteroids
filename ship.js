@@ -10,6 +10,7 @@
     this.angle_vel = 0;
     this.scale = scale || 1;
     this.radius = radius || Ship.RADIUS;
+    // this.size = 9999999999999999999;
     this.size = size || 250;
     this.maxVel = function() {
       return that.scale * -500;

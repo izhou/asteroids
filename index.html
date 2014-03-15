@@ -1,9 +1,8 @@
 <html>
 <head>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-<!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> -->
-  <!-- <link rel="stylesheet" href="font-awesome-4.0.3/css/font-awesome.min.css"> -->
-  <title>A page for you!</title>
+
+<title>A page for you!</title>
 </head>
 
 <body>
@@ -35,6 +34,13 @@
       color:purple;
       text-align: center;
       width: 20px;
+    }
+
+    input:focus {
+      outline-style: dotted;
+      outline-color: purple;
+      outline-width:3px;
+      border-radius: 5px
     }
 
     .text:hover {
@@ -83,25 +89,24 @@
       color:red;
     }
 
-    #closeButton {
+    .closeButton {
       display: inline-block;
       position: absolute;
       bottom: 10px;
-      right:20px;
     }
 
     #backButton {
       display: inline-block;
       position: absolute;
       bottom: 50px;
-      left:50px;      
+      left:75px;      
     }
 
     #fwdButton {
       display: inline-block;
       position: absolute;
       bottom: 50px;
-      right:50px;
+      right:75px;
     }
 
     #newGame {
@@ -112,10 +117,8 @@
     }
 
     #highScoresTable {
-
+      color: gray !important;
     }
-
-
 
     .panel{
       z-index: 1000;
@@ -140,13 +143,21 @@
     .scoreSubmission {
       display: inline-block;
       text-align: center;
-      position: relative;
-      width: 300px;
+      position: absolute;
+      top:125px;
+      width:600px;
+      margin-left:-300px;
 
       /*position: absolute;*/
       /*margin:0 auto;*/
+    }
 
-
+    .endOptions {
+      display: inline-block;
+      text-align: center;
+      position:absolute;
+      top:225px;
+      right:200px;
     }
 
     body{
@@ -188,7 +199,7 @@
     <div class='text button playGame'>PLAY  GAME</div>
     <br>
     <div class='text button highScores' style='font-size:23'>High Scores</div>
-    <br>
+    <br><br>
     <div class='text iButton' id='question'> ? </div>
     <div class='text iButton' id='infoButton'><i class="fa fa-info-circle"></i></div>
     <!-- <div class='text' id='infoButton'> i </div>   -->
@@ -202,100 +213,49 @@
       <div class='text button showSubmitPanel'>SUBMIT SCORE</div>
     </div>
     <br>
-    <div style='text-align:center;'>
+    <div class='endOptions'>
       <div class='text button playGame'>Play Again</div><br>
       <div class='text button mainMenu'>Main Menu</div>
     </div>
   </div>
 
+  <div class = 'text panel' id = 'instructionPanel'>
+    <div class='closeButton' style='right:50px;'>x</div>
+    <div style='font-size :13; color:white;'>
+    Arrow keys or WASD to navigate.<br>
+    Space to shoot.<br><br>
+    Eat up the smaller asteroids to embiggen yourself! 
+    </div>
+  </div>
+
   <div class='text panel' id = 'submitScorePanel'>
-      <form id='submitForm' method="POST" action="post-handler.php" onsubmit="submitForm(this);">
-      <input class = 'text' type='text' style = 'background-color:black; border:none' id='user' autofocus>
-      <br><br>
+    <form id='submitForm'>
+      <input class = 'text' type='text' style = 'background-color:black; border:none' id='user' maxlength='12'  minlength='1'
+      onkeydown="if(event.keyCode=== 13) {
+        event.preventDefault(); 
+        highScores.addScore(); 
+        }">
+    </form>
+    <div class ='scoreSubmission'>
       <div class='text score'></div>
       <br>
-      </form>
-    <div class='text button submitScore' style='background-color:black; border:none' 
-      onclick='highScores.addScore();'>SUBMIT SCORE</div>
-    <br><br>
-    <br>
+      <div class='text button submitScore' style='background-color:black; border:none' onclick='highScores.addScore();'>SUBMIT SCORE
+      </div>
+    </div>
   </div>
 
   <div class='text panel' id='HighScorePanel'>
     HIGH SCORES
     <br>
-    <div class='text' id='highScores'></div>
+    <div class='text' id='highScores' style="width:450px; margin-left:25px;"></div>
     <br>
     <div class='text-sm button' id ='backButton'><i class='fa fa-arrow-left'>a</i></div>
     <div class='text' id='newGame'>NEW GAME</div>
     <div class='text-sm button' id ='fwdButton'><i class='fa fa-arrow-right'>b</i></div>
   </div>
 
-  <script>
-
-
-  // var submitScore = function() {
-  //   var submitScore = new XMLHttpRequest();
-  //   var user = document.getElementById("user").value;
-  //   var address = "./addScore?user=" + user +"&score=" + game.ship.size;
-  //   submitScore.open("post", address, true);
-  //   submitScore.send();
-  //   $('#submitScorePanel').hide();
-  //   $('#HighScorePanel').show();
-  //   submitScore.onreadystatechange=function() {
-  //     if (submitScore.readyState == 4 && submitScore.status == 200) {
-  //       showScoresByUser(user);
-  //     }
-  //   }
-  // }
-
-  // var createTable = function(minRank, array) {
-  //   var table = '<table>'
-  //   for (var i = 0; i < 5; i++) {
-  //     var row = '<tr>';
-  //     row += '<td>'+ (minRank + i + 1) +')</td>' 
-  //     _.times(2, function() {
-  //       row += '<td>' + array.shift() + '</td>';
-  //     });
-  //     row += '</tr>'
-  //     table += row;
-  //   }
-  //   table += '</table>'
-  //   console.log(table);
-  //   return table;
-  // }
-
-  // var showScoresByUser = function(user) {
-  //   var address = "./scores?user=" + user;
-  //   showScores(address);
-  // }
-
-  // var showScoresByPage = function(page) {
-  //   highScoresPage = page;
-  //   var address = "./scores?page=" + page;
-  //   showScores(address);
-  // }
-
-  // var showScores = function(address) {
-  //   var scores = new XMLHttpRequest();
-  //   scores.open("get", address, true);
-  //   scores.send();
-  //   scores.onreadystatechange=function() {
-  //     if (scores.readyState==4 && scores.status==200) {
-  //       console.log(scores.responseText);
-  //       var response = JSON.parse(scores.responseText);
-  //       var minRank = parseInt(response.shift());
-  //       highScoresPage = (minRank - 1) / 5;
-  //       var array = response;
-  //       $('#highScores').html(createTable(minRank, array));
-  //     }
-  //   }   
-  // }
-
-  </script>
-
   <div class='text panel' id = 'infoPanel'>
-    <div id='closeButton'>x</div>
+    <div class='closeButton' style='right:20px;'>x</div>
     <div style='font-size :13; color:white;'>
       Code and concept developed by Irene Zhou
       <br>
@@ -303,9 +263,7 @@
       <br>
       Song by Virt5
       <br>
-      Sound effects by FOOO
-      <br>
-      ire.ne
+      <a href='www.ire.ne'>www.ire.ne</a>
     </div>
   </div>
   
@@ -387,27 +345,27 @@
 
     })
 
+    $('#question').click(function() {
+      $('#instructionPanel').show();
+    })
+
     $('#pauseButton').click(function() {
-      $('#pauseButton').html((game.isPaused) ? '<i class="fa fa-pause"></i>' :'<i class="fa fa-play"></i>');
-      game.isPaused = !game.isPaused;
-      if (musicOn) {
-        (music.paused) ? music.play() : music.pause();
-      }
-      $('#pausePanel').toggle();
+      game.pause();
     })
 
     $('#infoButton').click(function() {
       $('#infoPanel').show();
     })
 
-    $('#closeButton').click(function() {
-      $('#infoPanel').hide();
+    $('.closeButton').click(function() {
+      $('.panel').hide();
+      $('#startPanel').show();
     })
 
     $('.showSubmitPanel').click(function() {
-      console.log('wtf');
       $('.panel').hide();
       $('#submitScorePanel').show();
+      $('#user').focus();
     });
 
   </script>
