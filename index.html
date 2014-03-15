@@ -51,8 +51,6 @@
     .button:hover {
       color:red;
       cursor:pointer;
-      /*cursor:hand;*/
-      /*font-weight: bold;*/
       text-align: center;
     }
 
@@ -148,9 +146,6 @@
       top:125px;
       width:600px;
       margin-left:-300px;
-
-      /*position: absolute;*/
-      /*margin:0 auto;*/
     }
 
     .endOptions {
@@ -203,7 +198,6 @@
     <br><br>
     <div class='text iButton' id='question'> ? </div>
     <div class='text iButton' id='infoButton'><i class="fa fa-info-circle"></i></div>
-    <!-- <div class='text' id='infoButton'> i </div>   -->
   </div>
 
   <div class='text panel' id = 'endPanel'>
@@ -250,9 +244,9 @@
     <br>
     <div class='text' id='highScores' style="width:450px; margin-left:25px;"></div>
     <br>
-    <div class='text-sm button' id ='backButton'><i class='fa fa-arrow-left'>a</i></div>
+    <div class='text-sm button' id ='backButton'><i class='fa fa-arrow-left'></i></div>
     <div class='text' id='newGame'>NEW GAME</div>
-    <div class='text-sm button' id ='fwdButton'><i class='fa fa-arrow-right'>b</i></div>
+    <div class='text-sm button' id ='fwdButton'><i class='fa fa-arrow-right'></i></div>
   </div>
 
   <div class='text panel' id = 'infoPanel'>
@@ -283,7 +277,6 @@
     $('#startPanel').show();
     $('#pausePanel').hide();
     $('#buttons').hide();
-    // $('#submitScorePanel').show();
     var musicOn = true;
     var sfxOn = true;
     music.loop = true;
@@ -307,12 +300,9 @@
       sfxOn = !sfxOn;
     });
 
-    //var body = document.getElementsByTagName("body")[0];
-        
     $('.playGame').click(function(){
       $('#buttons').show();
       $('.panel').hide();
-      // scoreBoard = new Asteroids.Scoreboard();
       game = new Asteroids.Game(canvas.getContext("2d"));
       canvas.setAttribute("width", game.dimX);
       canvas.setAttribute("height", game.dimY);

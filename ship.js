@@ -10,7 +10,6 @@
     this.angle_vel = 0;
     this.scale = scale || 1;
     this.radius = radius || Ship.RADIUS;
-    // this.size = 9999999999999999999;
     this.size = size || 250;
     this.maxVel = function() {
       return that.scale * -500;
@@ -59,13 +58,10 @@
     } else if (this.vel > -maxVel * this.scale) {
       this.vel = -maxVel * this.scale;
     }
-    // console.log(maxVel);
-    // console.log(this.vel);
   }
 
   Ship.prototype.fragment = function(scale) {
     var shipFragment = new Asteroids.shipFrag(this.pos, this.angle, this.radius, this.coordinates, this.pos, this.scale, this.vel);
-    // console.log(shipFragment);
     return shipFragment.shatter();
   }
 
@@ -109,9 +105,5 @@
       }, 30);
     }, 1500);
   }
-
-  // Ship.prototype.fragments = function(pos, angle) {
-
-  // }
-
+  
 })(this)

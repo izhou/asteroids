@@ -23,7 +23,6 @@
   };
 
   Asteroid.prototype.move = function(elapsedSeconds, scale) {
-    // this.rotation += this.rotationSpeed;
     Asteroids.MovingObject.prototype.move.call(this, elapsedSeconds);
   };
 
