@@ -10,6 +10,8 @@
     this.ship = Asteroids.Ship.buildShip([0,0]);
     this.livesLeft = 3;
     this.shipFragments = [];
+    this.music = new Audio('sound/Virt_-_Katamari_Damacy.mp3');
+    this.music.loop = true;
 
     this.time = 0;
     this.keysPressed = [];
@@ -112,9 +114,7 @@
 
   Game.prototype.removeLife = function() {
     this.playSound('death');
-    if (musicOn) {
-      music.pause();
-    }
+    this.music.pause();
 
     var g = this;
     g.ship.isGhost = true;
@@ -129,10 +129,10 @@
           g.ship = Asteroids.Ship.buildShip([(g.dimX/2 - g.screenCenter[0]) * g.scale ,(g.dimY/2 - g.screenCenter[1]) * g.scale], g.scale, g.ship.radius, g.ship.size);
           g.shipFragments = [];
           g.ship.ghost();
-          music.load();
+          g.music.load();
           setTimeout(function() {
             if (musicOn) {
-              music.play();
+              g.music.play();
             }
           }, 1500);
         }, 500);
@@ -232,16 +232,18 @@
           case 39:
             g.ship.rotate(elapsedSeconds);
             break;
-          case 81:
-            if (musicOn) {
-              music.pause();
-              music.currentTime = 0;
-            }
+          case 81: //q ends the game
+            g.music.pause();
             g.endGame();
         }
       }
     );
   };
+
+  Game.prototype.unbindKeyHandlers = function() {
+    $(window).unbind('keydown');
+    $(window).unbind('keyup');
+  }
 
 
   Game.prototype.draw = function(ctx) {
@@ -363,7 +365,6 @@
           return fragment;
         }));
         this.lastShatterTime = now;
-        console.log(this.shipFragments);
       }
     }
 
@@ -398,6 +399,9 @@
   Game.prototype.start = function() {
     var g = this;
     var opacity = 1;
+    if (musicOn) {
+      this.music.play();
+    };
     this.addStarterAsteroids(5);
     this.addStars(200);
 
@@ -419,9 +423,10 @@
   };
 
   Game.prototype.endGame = function() {
-    var g = this;
-    music.load();
     cancelAnimationFrame(this.animationFrame);
+    this.unbindKeyHandlers();
+
+    var g = this;
     var fadeOut = setInterval(function() {
       var height = canvas.getAttribute("height");
       var width = canvas.getAttribute("width");
@@ -430,19 +435,23 @@
     }, 50);
     setTimeout(function(){
       clearInterval(fadeOut)
-    }, 1500)
+    }, 1500);
+
     $('#endPanel').show();
     $('.score').html(g.ship.size);
     $('#buttons').hide();
   };
 
   Game.prototype.pause = function() {
-    $('#pauseButton').html((game.isPaused) ? '<i class="fa fa-pause"></i>' :'<i class="fa fa-play"></i>');
     this.isPaused = !this.isPaused;
-    if (musicOn) {
-      (music.paused) ? music.play() : music.pause();
-    }
-    $('#pausePanel').toggle();
+    var g = this;
+    setTimeout(function() {
+      $('#pauseButton').html((g.isPaused) ? '<i class="fa fa-play"></i>' : '<i class="fa fa-pause"></i>');
+      if (musicOn) {
+        (g.isPaused) ? g.music.pause() : g.music.play();
+      }
+      (g.isPaused) ? $('#pausePanel').show() : $('#pausePanel').hide();
+      }, 0);
   }
 
   Game.prototype.submitScore = function() {

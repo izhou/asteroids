@@ -1,5 +1,8 @@
+<!doctype html>
 <html>
 <head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
@@ -11,6 +14,7 @@
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <script type="application/javascript" src="underscore.js"></script>
   <script type="application/javascript" src="inheritance.js"></script>
+  <script type="application/javascript" src="browserCompat.js"></script>
   <script type="application/javascript" src="movingObject.js"></script>
   <script type="application/javascript" src="asteroid.js"></script>
   <script type="application/javascript" src="bullet.js"></script>
@@ -111,12 +115,15 @@
     #newGame {
       display: inline-block;
       position: absolute;
-      bottom: 50px;
+      bottom: 40px;
       right:225px;
     }
 
     #highScoresTable {
       color: gray !important;
+      font-size: 14px !important;
+      align: center;
+      left:50%;
     }
 
     .panel{
@@ -133,6 +140,7 @@
       top:50%;
       left:50%;
       text-align: center;
+      -moz-box-sizing: content-box !important;
       box-sizing: content-box !important;
       padding:50px;
       border-radius: 20px;    
@@ -141,8 +149,12 @@
 
     .scoreSubmission {
       display: inline-block;
-      text-align: center;
       position: absolute;
+      text-align: center;
+      text-align: -moz-center;
+      
+      text-align: -webkit-center;
+      left:50%;
       top:125px;
       width:600px;
       margin-left:-300px;
@@ -184,17 +196,17 @@
       font-family: 'arial';
     }
   </style>
-  <audio id = "music" src = "sound/Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"></audio>
+  <!-- <audio id = "music" src = "sound/Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"></audio> -->
 
   <div class='text panel' id = 'startPanel'>
     ASTEROIDS DAMACY
     <br>
-    <div class = 'text name' style='font-size :13; color:white;'>Irene Zhou</div>
+    <div class = 'text name' style='font-size :13px; color:white;'>Irene Zhou</div>
     <br>
     <br><br>
     <div class='text button playGame'>PLAY  GAME</div>
     <br>
-    <div class='text button highScores' style='font-size:23'>High Scores</div>
+    <div class='text button highScores' style='font-size:23px'>High Scores</div>
     <br><br>
     <div class='text iButton' id='question'> ? </div>
     <div class='text iButton' id='infoButton'><i class="fa fa-info-circle"></i></div>
@@ -216,7 +228,7 @@
 
   <div class = 'text panel' id = 'instructionPanel'>
     <div class='closeButton' style='right:50px;'>x</div>
-    <div style='font-size :13; color:white;'>
+    <div style='font-size :13px; color:white;'>
     Arrow keys or WASD to navigate.<br>
     Space to shoot.<br><br>
     Eat up the smaller asteroids to embiggen yourself! 
@@ -225,7 +237,7 @@
 
   <div class='text panel' id = 'submitScorePanel'>
     <form id='submitForm'>
-      <input class = 'text' type='text' style = 'background-color:black; border:none' id='user' maxlength='12'  minlength='1'
+      <input class = 'text' type='text' style = 'background-color:black; border:none' id='user' maxlength='12'
       onkeydown="if(event.keyCode=== 13) {
         event.preventDefault(); 
         highScores.addScore(); 
@@ -279,17 +291,17 @@
     $('#buttons').hide();
     var musicOn = true;
     var sfxOn = true;
-    music.loop = true;
+    
     var highScores = new Asteroids.Scoreboard();
     var canvas = document.createElement("canvas");
     $('body').append(canvas);
 
     $('#musicButton').click(function() {
       if (musicOn) {
-        music.pause();
+        game.music.pause();
         $('#musicButton').html('<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></i><i class="fa fa-ban fa-stack-1x" style="font-size:1.5em; line-height:1.4; margin-left:2px;"></i></span>');
       } else {
-        music.play();
+        game.music.play();
         $('#musicButton').html('<span class="fa-stack"><i class="fa fa-music fa-stack-1x"></span>');
       }
       musicOn = !musicOn;
@@ -307,7 +319,7 @@
       canvas.setAttribute("width", game.dimX);
       canvas.setAttribute("height", game.dimY);
       game.start();
-      if (musicOn) music.play();
+      // if (musicOn) game.music.play();
     })
 
     $('.highScores').click(function(){
@@ -333,7 +345,6 @@
     $('#newGame').click(function() {
       $('#HighScorePanel').hide();
       $('#startPanel').show();
-
     })
 
     $('#question').click(function() {

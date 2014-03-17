@@ -20,6 +20,7 @@ var server = http.createServer(function(req, res) {
   if (filePath === "./") {
     filePath = './index.html';
   }
+
   if (req.method === "POST" && parsedUrl.pathname === "./addScore") {
     var newScore = parseInt(parsedUrl.query.score);
     var user = parsedUrl.query.user;
@@ -98,4 +99,5 @@ var server = http.createServer(function(req, res) {
   })
 });
 
+console.log('listening on 8192')
 server.listen(8192);

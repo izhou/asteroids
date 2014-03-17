@@ -6,7 +6,6 @@
     var xhr = new XMLHttpRequest();
     xhr.open("get", "./getScores", true);
     xhr.send();
-    console.log(xhr.responseText);
     this.scores = this.fetchScores();
     this.currentPage = 0;
     this.numPages = Math.ceil(this.scores.length/ (2 * Scoreboard.PAGE_SIZE));
@@ -67,7 +66,7 @@
   Scoreboard.prototype.createScoresTable = function(minRank) {
     var scoresToShow = this.scores.slice(minRank * 2, (minRank + Scoreboard.PAGE_SIZE ) * 2);
     var scoresLength = scoresToShow.length / 2;
-    var table = '<table id = highScoresTable style:"align:center;">'
+    var table = '<table id = highScoresTable>'
     for (var i = 0; i < scoresLength; i++) {
       var row = '<tr>';
       row += '<td style="text-align:left; width:30px">'+ (minRank + i + 1) +')</td>' 
