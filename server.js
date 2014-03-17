@@ -6,7 +6,7 @@ var url = require('url');
 var redis = require('redis');
 
 var client = redis.createClient(11021, "barreleye.redistogo.com", {
-  auth_pass: '5da6e19474dd21b8a4cf681f79a3d915'
+  auth_pass: process.env.REDIS_AUTH
 });
 
 client.on('error', function(err) {

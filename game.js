@@ -182,16 +182,16 @@
     }
   };
 
-  Game.prototype.fireBullet = function() {
-    var g = this;
+  Game.prototype.fireBullet = function(elapsedSeconds) {
     var now = (+ new Date)/1000;
 
     if ((now - this.lastBulletTime) >= 0.2) {
+      this.ship.power(-elapsedSeconds * 0.5);
       this.playSound('laser');
-      g.bullets.push(Asteroids.Bullet.fireBullet(g, g.scale));
+      this.bullets.push(Asteroids.Bullet.fireBullet(this, this.scale));
       this.lastBulletTime = now;
     }
-  }
+  };
 
   Game.prototype.bindKeyHandlers = function() {
     var g = this;
@@ -213,8 +213,7 @@
         switch(key) {
           case 32:
             if (!g.ship.isGhost)
-              g.fireBullet();
-              g.ship.power(-elapsedSeconds * 0.075);
+              g.fireBullet(elapsedSeconds);
             break;
           case 87:
           case 38:
@@ -243,7 +242,7 @@
   Game.prototype.unbindKeyHandlers = function() {
     $(window).unbind('keydown');
     $(window).unbind('keyup');
-  }
+  };
 
 
   Game.prototype.draw = function(ctx) {
@@ -452,7 +451,7 @@
       }
       (g.isPaused) ? $('#pausePanel').show() : $('#pausePanel').hide();
       }, 0);
-  }
+  };
 
   Game.prototype.submitScore = function() {
     var submitScore = new XMLHttpRequest();
@@ -460,7 +459,7 @@
     var address = "./addScore?user=" + user +"&score=" + this.ship.size;
     submitScore.open("post", address, true);
     submitScore.send();
-  }
+  };
 
 })(this);
 
