@@ -22,7 +22,7 @@ var server = http.createServer(function(req, res) {
   }
 
   if (req.method === "POST" && parsedUrl.pathname === "./addScore") {
-    var newScore = parseInt(parsedUrl.query.score);
+    var newScore = parseFloat(parsedUrl.query.score.replace(' ', '+'));
     var user = parsedUrl.query.user;
     client.zscore("scores", user, function(err, oldScore) {
       if (err) {
