@@ -10,8 +10,9 @@
     this.ship = Asteroids.Ship.buildShip([0,0]);
     this.livesLeft = 3;
     this.shipFragments = [];
-    this.music = new Audio('sound/Virt_-_Katamari_Damacy.mp3');
-    this.music.loop = true;
+    // this.music = new Audio('sound/Virt_-_Katamari_Damacy.mp3');
+    // this.music.loop = true;
+    this.music = Asteroids.Game.loadMusic();
 
     this.time = 0;
     this.keysPressed = [];
@@ -37,6 +38,8 @@
     
     this.cameraCenter = [this.dimX/2, this.dimY/2];
     this.screenCenter = [this.dimX/2, this.dimY/2];
+    this.soundPool = Asteroids.Game.buildSoundPool();
+
   };
 
   Game.MSPF = 100;
@@ -61,23 +64,75 @@
     }
   };
 
+  Game.loadMusic = function() {
+    var music = new Audio('sound/Virt_-_Katamari_Damacy.mp3');
+    music.load();
+    music.loop = true;
+    return music;
+  };
+
+  Game.buildSoundPool = function(maxSize) {
+    this.explosions = [];
+    this.bullets = [];
+    
+    for (var i = 0; i < 3; i++) {
+      for (var j = 1; j <= 5; j++) {
+        var explosion = new Audio('sound/explosion'
+          + j.toString()
+          + ((j < 4) ? '.wav' : '.mp3')
+        );
+        explosion.volume = 0.5;
+        explosion.load();
+        this.explosions.push(explosion);
+      }
+
+      var bullet = new Audio('sound/fireBullet.wav');
+      bullet.load();
+      this.bullets.push(bullet);
+    }
+    this.levelUp = new Audio('sound/levelUp.wav');
+    this.death = new Audio('sound/death.mp3');
+    this.deathsplosion = new Audio('sound/deathsplosion.mp3')
+    
+    this.levelUp.load();
+    this.death.load();
+    this.deathsplosion.load();
+
+    return this;
+  };
+
+  Game.prototype.getSoundFromPool = function(pool) {
+    var startInd = Math.floor(Math.random() * pool.length) //randomizes explosions sound
+    for (var i = 0; i < pool.length; i++) {
+      var index = (startInd + i) % pool.length;
+      if (pool[index].currentTime == 0) {
+        pool[index].play();
+        break;
+      } else {
+        pool[index].load();
+        // console.log(pool[index].currentTime);        
+      }
+    }
+  }
+
   Game.prototype.playSound = function(sound) {
     if (sfxOn) {
       switch(sound) {
         case 'levelUp':
-          new Audio('sound/levelUp.wav').play();
+          this.soundPool.levelUp.play();
           break;
         case 'laser':
-          new Audio('sound/fireBullet.wav').play();
+          this.getSoundFromPool(this.soundPool.bullets);
           break;
         case 'death':
-          new Audio('sound/death.mp3').play();
-          new Audio('sound/deathsplosion.mp3').play();
+          this.soundPool.death.play();
+          this.soundPool.deathsplosion.play();
           break;
         case 'explosion':
-          var collisionSound = new Audio(['sound/explosion.wav', 'sound/explosion2.wav', 'sound/explosion4.mp3', 'sound/explosion5.mp3', 'sound/explosion3.wav'][Math.floor(Math.random() * 5)]);
-          collisionSound.volume = 0.5;
-          collisionSound.play();
+          this.getSoundFromPool(this.soundPool.explosions);
+          // var collisionSound = new Audio(['sound/explosion.wav', 'sound/explosion2.wav', 'sound/explosion4.mp3', 'sound/explosion5.mp3', 'sound/explosion3.wav'][Math.floor(Math.random() * 5)]);
+          // collisionSound.volume = 0.5;
+          // collisionSound.play();
           break;
       }
     }
@@ -399,6 +454,8 @@
     var g = this;
     var opacity = 1;
     if (musicOn) {
+      console.log('should play');
+      console.log(this.music);
       this.music.play();
     };
     this.addStarterAsteroids(5);
