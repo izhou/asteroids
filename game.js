@@ -75,7 +75,7 @@
     this.explosions = [];
     this.bullets = [];
     
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 2; i++) {
       for (var j = 1; j <= 5; j++) {
         var explosion = new Audio('sound/explosion'
           + j.toString()
@@ -85,7 +85,9 @@
         explosion.load();
         this.explosions.push(explosion);
       }
+    }
 
+    for (var i = 0; i < 5; i++) {   
       var bullet = new Audio('sound/fireBullet.wav');
       bullet.load();
       this.bullets.push(bullet);
@@ -101,38 +103,39 @@
     return this;
   };
 
-  Game.prototype.getSoundFromPool = function(pool) {
+  Game.prototype.playSoundFromPool = function(pool) {
     var startInd = Math.floor(Math.random() * pool.length) //randomizes explosions sound
     for (var i = 0; i < pool.length; i++) {
       var index = (startInd + i) % pool.length;
       if (pool[index].currentTime == 0) {
-        pool[index].play();
+        this.loadSound(pool[index]);
         break;
-      } else {
-        pool[index].load();
-        // console.log(pool[index].currentTime);        
       }
     }
   }
+
+  Game.prototype.loadSound = function(sound){
+    sound.play();
+    sound.addEventListener('ended', function(s) {
+      sound.load();
+    });
+  };
 
   Game.prototype.playSound = function(sound) {
     if (sfxOn) {
       switch(sound) {
         case 'levelUp':
-          this.soundPool.levelUp.play();
+          this.loadSound(this.soundPool.levelUp);
           break;
         case 'laser':
-          this.getSoundFromPool(this.soundPool.bullets);
+          this.playSoundFromPool(this.soundPool.bullets);
           break;
         case 'death':
-          this.soundPool.death.play();
-          this.soundPool.deathsplosion.play();
+          this.loadSound(this.soundPool.death);
+          this.loadSound(this.soundPool.deathsplosion);
           break;
         case 'explosion':
-          this.getSoundFromPool(this.soundPool.explosions);
-          // var collisionSound = new Audio(['sound/explosion.wav', 'sound/explosion2.wav', 'sound/explosion4.mp3', 'sound/explosion5.mp3', 'sound/explosion3.wav'][Math.floor(Math.random() * 5)]);
-          // collisionSound.volume = 0.5;
-          // collisionSound.play();
+          this.playSoundFromPool(this.soundPool.explosions);
           break;
       }
     }
@@ -454,8 +457,6 @@
     var g = this;
     var opacity = 1;
     if (musicOn) {
-      console.log('should play');
-      console.log(this.music);
       this.music.play();
     };
     this.addStarterAsteroids(5);
