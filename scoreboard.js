@@ -1,7 +1,7 @@
 (function(root) {
 
   var Asteroids = root.Asteroids = (root.Asteroids || {});
- 
+
   var Scoreboard = Asteroids.Scoreboard = function() {
     var xhr = new XMLHttpRequest();
     xhr.open("get", "./getScores", true);
@@ -9,7 +9,7 @@
     this.scores = this.fetchScores();
     this.currentPage = 0;
     this.numPages = Math.ceil(this.scores.length/ (2 * Scoreboard.PAGE_SIZE));
-    
+
   };
 
   Scoreboard.PAGE_SIZE = 7;
@@ -18,7 +18,7 @@
     $('#submitScorePanel').hide();
     $('#HighScorePanel').show();
     var s = this;
-    var user = document.getElementById("user").value;
+    var user = _.escape(document.getElementById("user").value);
     var submitScore = new XMLHttpRequest();
     var address = "./addScore?user=" + user +"&score=" + game.ship.size;
     submitScore.open("post", address, true);
@@ -69,9 +69,9 @@
     var table = '<table id = highScoresTable>'
     for (var i = 0; i < scoresLength; i++) {
       var row = '<tr>';
-      row += '<td style="text-align:left; width:30px">'+ (minRank + i + 1) +')</td>' 
-      row += '<td style="text-align:left; width:170px;">' + scoresToShow.shift() + '</td>';
-      row += '<td style = "text-align: right; width:250px">' + scoresToShow.shift() + '</td>';
+      row += '<td style="text-align:left; width:30px">'+ (minRank + i + 1) +')</td>'
+      row += '<td style="text-align:left; width:170px;">' + _.escape(scoresToShow.shift()) + '</td>';
+      row += '<td style = "text-align: right; width:250px">' + _.escape(scoresToShow.shift()) + '</td>';
       row += '</tr>'
       table += row;
     }
