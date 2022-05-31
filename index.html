@@ -3,16 +3,14 @@
 <head>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <meta content="utf-8" http-equiv="encoding">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
 <title>My, space certainly is full of things...</title>
 </head>
 
 <body>
-  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-  <script type="application/javascript" src="underscore.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
   <script type="application/javascript" src="inheritance.js"></script>
   <script type="application/javascript" src="browserCompat.js"></script>
   <script type="application/javascript" src="movingObject.js"></script>
@@ -98,34 +96,6 @@
       bottom: 10px;
     }
 
-    #backButton {
-      display: inline-block;
-      position: absolute;
-      bottom: 50px;
-      left:75px;      
-    }
-
-    #fwdButton {
-      display: inline-block;
-      position: absolute;
-      bottom: 50px;
-      right:75px;
-    }
-
-    #newGame {
-      display: inline-block;
-      position: absolute;
-      bottom: 40px;
-      right:225px;
-    }
-
-    #highScoresTable {
-      color: gray !important;
-      font-size: 14px !important;
-      align: center;
-      left:50%;
-    }
-
     .panel{
       z-index: 1000;
       color: white;
@@ -145,19 +115,6 @@
       padding:50px;
       border-radius: 20px;    
       background-color: black;
-    }
-
-    .scoreSubmission {
-      display: inline-block;
-      position: absolute;
-      text-align: center;
-      text-align: -moz-center;
-      
-      text-align: -webkit-center;
-      left:50%;
-      top:125px;
-      width:600px;
-      margin-left:-300px;
     }
 
     .endOptions {
@@ -196,7 +153,6 @@
       font-family: 'arial';
     }
   </style>
-  <!-- <audio id = "music" src = "sound/Virt_-_Katamari_Damacy.mp3" type = "audio/mpeg"></audio> -->
 
   <div class='text panel' id = 'startPanel'>
     ASTEROIDS DAMACY
@@ -206,7 +162,6 @@
     <br><br>
     <div class='text button playGame'>PLAY  GAME</div>
     <br>
-    <div class='text button highScores' style='font-size:23px'>High Scores</div>
     <br><br>
     <div class='text iButton' id='question'> ? </div>
     <div class='text iButton' id='infoButton'><i class="fa fa-info-circle"></i></div>
@@ -214,12 +169,7 @@
 
   <div class='text panel' id = 'endPanel'>
     <div class= 'endMessage'>DEATH BECOMES YOU</div>
-    <div class='scoreSubmission'>
-      <div class='text score'></div>
-      <br>
-      <div class='text button showSubmitPanel'>SUBMIT SCORE</div>
-    </div>
-    <br>
+    <br><br><br>
     <div class='endOptions'>
       <div class='text button playGame'>Play Again</div><br>
       <div class='text button mainMenu'>Main Menu</div>
@@ -235,38 +185,12 @@
     </div>
   </div>
 
-  <div class='text panel' id = 'submitScorePanel'>
-    <form id='submitForm'>
-      <input class = 'text' type='text' style = 'background-color:black; border:none' id='user' maxlength='12'
-      onkeydown="if(event.keyCode=== 13) {
-        event.preventDefault(); 
-        highScores.addScore(); 
-        }">
-    </form>
-    <div class ='scoreSubmission'>
-      <div class='text score'></div>
-      <br>
-      <div class='text button submitScore' style='background-color:black; border:none' onclick='highScores.addScore();'>SUBMIT SCORE
-      </div>
-    </div>
-  </div>
-
-  <div class='text panel' id='HighScorePanel'>
-    HIGH SCORES
-    <br>
-    <div class='text' id='highScores' style="width:450px; margin-left:25px;"></div>
-    <br>
-    <div class='text-sm button' id ='backButton'><i class='fa fa-arrow-left'></i></div>
-    <div class='text' id='newGame'>NEW GAME</div>
-    <div class='text-sm button' id ='fwdButton'><i class='fa fa-arrow-right'></i></div>
-  </div>
-
   <div class='text panel' id = 'infoPanel'>
     <div class='closeButton' style='right:20px;'>x</div>
     <div style='font-size :13px; color:white;'>
       Code and concept developed by Irene Zhou.
       <br><br>
-      Game written in Javascript and HTML5 Canvas. High scores table created with Node and Redis.
+      Game written in Javascript and HTML5 Canvas.
       <br><br>
       Song by Virt
       <br><br>
@@ -293,7 +217,6 @@
     var musicOn = true;
     var sfxOn = true;
     
-    // var highScores = new Asteroids.Scoreboard();
     var canvas = document.createElement("canvas");
     $('body').append(canvas);
 
@@ -322,28 +245,8 @@
       game.start();
     });
 
-    $('.highScores').click(function(){
-      $('#HighScorePanel').show();
-      highScores.currentPage = 0;
-      highScores.showScores();
-
-    });
-
-    $('#backButton').click(function() {
-      highScores.prevPage();
-    });
-
-    $('#fwdButton').click(function() {
-      highScores.nextPage();
-    });
-
     $('.mainMenu').click(function(){
       $('#endPanel').hide();
-      $('#startPanel').show();
-    });
-
-    $('#newGame').click(function() {
-      $('#HighScorePanel').hide();
       $('#startPanel').show();
     });
 
@@ -363,13 +266,6 @@
       $('.panel').hide();
       $('#startPanel').show();
     });
-
-    $('.showSubmitPanel').click(function() {
-      $('.panel').hide();
-      $('#submitScorePanel').show();
-      $('#user').focus();
-    });
-
   </script>
 </body>
 </html>
