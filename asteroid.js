@@ -15,7 +15,7 @@
 
   Asteroid.prototype.draw = function(ctx, shipSize) {
     
-    ctx.strokeStyle = (this.area < shipSize ? "purple" : "white");
+    ctx.strokeStyle = (this.area < shipSize ? "magenta" : "white");
     ctx.save();
     Asteroids.MovingObject.prototype.transformRender.call(this, ctx);
     ctx.stroke();
